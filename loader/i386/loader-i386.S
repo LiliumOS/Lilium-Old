@@ -5,6 +5,7 @@
 .text
 
 .global _start
+.global _hlt
 
 _start:
     # All of this is ix86 compatible.
@@ -36,38 +37,8 @@ _start:
     mov %cr0,%eax
     and $0x7fffffff,%eax
     mov %eax,%cr0
-    lea __pml4t,%edi
-    mov %edi,%cr3
-    xor %eax,%eax
-    mov $4096,%ecx
-    rep stosl
-    mov %cr3,%edi
-    lea __pdpt, %esi
-    add $3,%esi
-    mov %esi,(%edi)
-    add $0x1000,%edi
-    lea __pdt, %esi
-    add $3,%esi
-    mov %esi,(%edi)
-    add $0x1000,%edi
-    mov $0x03,%ebx
-    mov $512,%ecx
-    .SetEntry:
-    mov %ebx, (%edi)
-    add $0x1000,%ebx
-    lea 8(%edi),%edi
-    loop .SetEntry
-    mov %cr4,%eax
-    or $32,%eax
-    mov %eax,%cr4
-    mov $0xC0000080,%ecx
-    rdmsr
-    or $256,%eax
-    wrmsr
-    lgdt (__gdt_ptr)
-    pop %edx
-    jmp $__gdt_code, $start_x64
-    _hlt:
+    call load_osimg
+_hlt:
     cli
     hlt
     jmp _hlt

@@ -7,5 +7,8 @@ set(CMAKE_C_STANDARD_REQUIRED TRUE)
 add_subdirectory(ld)
 add_subdirectory(loader)
 
-add_executable(phantom src/start_kernel.c)
-target_link_libraries(phantom loader-i386 loader-amd64 phantom-kernel-ld-scripts)
+add_executable(phantom src/start_kernel.c src/printk.c)
+
+target_link_libraries(phantom loader-amd64 phantom-kernel-ld-scripts)
+
+
