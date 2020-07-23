@@ -1,6 +1,6 @@
 
-set(CMAKE_C_COMPILER_TARGET i386-pc-elf)
-set(CMAKE_ASM_COMPILER_TARGET i386-pc-elf)
+set(CMAKE_C_COMPILER_TARGET i386-pc-none-elf)
+set(CMAKE_ASM_COMPILER_TARGET i386-pc-none-elf)
 
 file(GENERATE OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/img-include.s
         INPUT ${CMAKE_CURRENT_SOURCE_DIR}/img-include.s)
@@ -12,5 +12,4 @@ set_target_properties(phantom-image
 
 target_link_options(phantom-image PRIVATE "-Wl,-T${CMAKE_CURRENT_SOURCE_DIR}/i386-pc-phantom-loader.ld")
 
-set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/img-include.s PROPERTIES
-        OBJECT_DEPENDS phantom)
+add_dependencies(phantom-image phantom)

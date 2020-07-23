@@ -1,3 +1,3 @@
 
-.section .img, r
+.section .img
 .incbin "$<TARGET_FILE:phantom>"
