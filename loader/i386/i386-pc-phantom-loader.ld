@@ -3,7 +3,7 @@ ENTRY(_start)
 PHDRS {
     text PT_LOAD;
     data PT_LOAD;
-    img PT_LOAD AT(0x7f000000);
+    img PT_LOAD;
 }
 
 SECTIONS {
@@ -21,10 +21,9 @@ SECTIONS {
         . = .+4096;
         __stack_head = .;
     } :data
-
-    .img 0x7f000000: {
-        __head = .;
-        KEEP(*(.img));
+    . = .;
+    .data.img ALIGN(1024): {
+        KEEP(*(.data.img));
     } :img
 
 }
