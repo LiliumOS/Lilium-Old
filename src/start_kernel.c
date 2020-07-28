@@ -7,4 +7,6 @@ void printk(const char* v);
 void start_kernel(struct multiboot* multiboot){
     (void)multiboot;
     printk("Hello World\n");
+
+    for(;;);
 }

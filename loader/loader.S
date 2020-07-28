@@ -1,4 +1,5 @@
 
+.global _start
 .global start_x64
 
 .text

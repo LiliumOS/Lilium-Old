@@ -3,7 +3,7 @@
 //
 
 #include <elf.h>
-#include <string.h>
+#include <memcpy.h>
 
 union ElfHeader{
     unsigned e_ident[EI_NIDENT];
