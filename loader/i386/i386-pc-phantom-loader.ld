@@ -7,6 +7,7 @@ PHDRS {
 }
 
 SECTIONS {
+    . = 0x10000;
     .mb ALIGN(1024):{
         LONG(0x1BADB002);
         LONG(3);

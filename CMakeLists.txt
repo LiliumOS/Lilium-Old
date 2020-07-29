@@ -11,6 +11,7 @@ add_subdirectory(loader)
 
 add_executable(phantom src/start_kernel.c src/printk.c)
 
+target_link_options(phantom PRIVATE "-Wl,-Map=phantom.map")
 
 target_link_libraries(phantom loader-amd64 phantom-kernel-ld-scripts)
 
