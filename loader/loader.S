@@ -35,7 +35,7 @@ _start:
     or $256,%eax
     wrmsr
     pop %edx
-    lgdt (__gdt_ptr)
+    lgdt __gdt_ptr
     jmp $__gdt_code, $start_x64
 
 .code64
