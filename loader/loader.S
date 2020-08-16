@@ -34,19 +34,26 @@ __gdt_ptr:
 .code32
 _start:
     cli
+    mov %cr0,%eax
+    and $0x7ffffff,%eax
+    mov %eax,%cr0
     lea __pml4t,%edi
     xor %eax,%eax
     mov $4096,%ecx
     rep stosl
-    mov %cr3,%edi
+    lea __pml4t,%edi
     lea __pdpt, %esi
     add $3,%esi
     mov %esi,(%edi)
-    add $0x1000,%edi
+    lea __pdpt, %edi
     lea __pdt, %esi
     add $3,%esi
     mov %esi,(%edi)
-    add $0x1000,%edi
+    lea __pdt, %edi
+    lea __pt, %esi
+    add $3,%esi
+    mov %esi,(%edi)
+    lea __pt,%edi
     mov $0x03,%ebx
     mov $512,%ecx
     .SetEntry:
@@ -56,6 +63,9 @@ _start:
     loop .SetEntry
     lea __pml4t,%edi
     mov %edi,%cr3
+    mov %cr0,%eax
+    or $0x80000000,%eax
+    mov %eax,%cr0
     mov %cr4,%eax
     or $32,%eax
     mov %eax,%cr4
