@@ -4,7 +4,7 @@
 
 void printk(const char* v);
 
-void start_kernel(struct multiboot* multiboot){
+_Noreturn __attribute__((section(".text.init"))) void start_kernel(void* multiboot){
     (void)multiboot;
     printk("Hello World\n");
 
