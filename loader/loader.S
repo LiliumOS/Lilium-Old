@@ -1,4 +1,31 @@
 
+
+.section .data.gdt
+__gdt:
+__gdt_nul:
+.short 0xFFFF
+.short 0
+.short 0
+.byte 1
+.byte 0
+__gdt_code:
+.short 0xFFFF
+.short 0
+.byte 0
+.byte 0x9a
+.byte 0xaf
+.byte 0
+__gdt_data:
+.short 0xFFFF
+.short 0
+.byte 0
+.byte 0x92
+.byte 0
+.byte 0
+__gdt_ptr:
+.short __gdt_ptr-__gdt
+.quad __gdt
+
 .global _start
 .global start_x64
 
