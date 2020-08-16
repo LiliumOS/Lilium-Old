@@ -20,7 +20,7 @@ __gdt_data:
 .short 0
 .byte 0
 .byte 0x92
-.byte 0
+.byte 0x4f
 .byte 0
 __gdt_ptr:
 .short __gdt_ptr-__gdt
@@ -33,8 +33,8 @@ __gdt_ptr:
 
 .code32
 _start:
+    cli
     lea __pml4t,%edi
-    mov %edi,%cr3
     xor %eax,%eax
     mov $4096,%ecx
     rep stosl
@@ -54,6 +54,8 @@ _start:
     add $0x1000,%ebx
     lea 8(%edi),%edi
     loop .SetEntry
+    lea __pml4t,%edi
+    mov %edi,%cr3
     mov %cr4,%eax
     or $32,%eax
     mov %eax,%cr4
@@ -69,7 +71,6 @@ _start:
 
 start_x64:
     # Now we can use x86_64 instructions
-    cli
     xor %rdi,%rdi
     mov %ebx,%edi
     .start_kernel:

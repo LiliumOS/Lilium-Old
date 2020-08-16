@@ -44,11 +44,12 @@ SECTIONS {
     }
     __vram_start = 0xb8000;
     .data.pt ALIGN(4096):{
-        __pt_start = 0;
-        __pml4t = 0;
-        __pdpt = 0x1000;
-        __pdt = 0x2000;
-        __pt  = 0x3000;
+        . = .;
+        __pt_start = .;
+        __pml4t = .;
+        __pdpt = .+0x1000;
+        __pdt = .+0x2000;
+        __pt  = .+0x3000;
     }
 
 }
