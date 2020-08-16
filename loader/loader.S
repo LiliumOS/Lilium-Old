@@ -63,9 +63,6 @@ _start:
     loop .SetEntry
     lea __pml4t,%edi
     mov %edi,%cr3
-    mov %cr0,%eax
-    or $0x80000000,%eax
-    mov %eax,%cr0
     mov %cr4,%eax
     or $32,%eax
     mov %eax,%cr4
@@ -73,6 +70,9 @@ _start:
     rdmsr
     or $256,%eax
     wrmsr
+    mov %cr0,%eax
+    or $0x80000000,%eax
+    mov %eax,%cr0
     pop %edx
     lgdt __gdt_ptr
     jmp $__gdt_code, $start_x64
