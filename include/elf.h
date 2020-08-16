@@ -62,7 +62,7 @@ typedef uint64_t Elf64_Xword;
 #define EI_PAD 9
 #define EI_NIDENT 16
 
-typedef struct{
+typedef struct Elf32_Ehdr{
     Elf_Byte e_ident[EI_NIDENT];
     Elf32_Half e_type;
     Elf32_Half e_machine;
@@ -79,7 +79,7 @@ typedef struct{
     Elf32_Section e_shstrndx;
 }Elf32_Ehdr;
 
-typedef struct{
+typedef struct Elf64_Ehdr{
     Elf_Byte e_ident[EI_NIDENT];
     Elf64_Half e_type;
     Elf64_Half e_machine;
