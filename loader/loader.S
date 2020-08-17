@@ -26,8 +26,14 @@ __gdt_ptr:
 .short __gdt_ptr-__gdt-1
 .quad __gdt
 
+__idt:
+.space 4096
+__idt_ptr:
+.short __idt_ptr-__idt-1
+.quad __idt
+
 .global _start
-.global start_x64
+.global _hlt
 
 .text
 
@@ -73,9 +79,35 @@ _start:
     mov %cr0,%eax
     or $0x80000000,%eax
     mov %eax,%cr0
-    pop %edx
+    call __init_idt
     lgdt __gdt_ptr
-    jmp $__gdt_code, $start_x64
+    lidt __idt_ptr
+    sti
+    pop %edx
+    jmp $__gdt_code-__gdt, $start_x64
+
+
+__init_idt:
+    lea __interrupts_end,%edx
+    lea __interrupts,%esi
+    lea __idt,%edi
+    .set_entry:
+    movw (%esi),%ax
+    movw %ax,(%edi)
+    lea __gdt_code-__gdt,%eax
+    movw %ax,2(%edi)
+    movw $0x8E00,4(%edi)
+    movw 2(%esi),%ax
+    movw %ax,6(%edi)
+    movl 4(%esi),%eax
+    mov %eax,8(%edi)
+    xor %eax,%eax
+    movl %eax,12(%edi)
+    lea 16(%edi),%edi
+    lea 8(%esi),%esi
+    cmp %esi,%edx
+    jne .set_entry
+    ret
 
 .code64
 

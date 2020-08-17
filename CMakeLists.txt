@@ -9,7 +9,9 @@ include_directories(include)
 add_subdirectory(ld)
 add_subdirectory(loader)
 
-add_executable(phantom src/start_kernel.c src/printk.c)
+add_executable(phantom src/start_kernel.c src/printk.c src/interrupts.S)
+
+target_compile_options(phantom PRIVATE -mno-red-zone)
 
 target_link_options(phantom PRIVATE "-Wl,-Map=phantom.map")
 
