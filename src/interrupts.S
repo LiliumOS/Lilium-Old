@@ -14,12 +14,20 @@ __interrupts:
 .quad __interrupt_ud
 .quad __interrupt_nm
 .quad __interrupt_df
-.quad __interrupt_cps
+.quad 0
 .quad __interrupt_ts
 .quad __interrupt_np
 .quad __interrupt_ss
 .quad __interrupt_gp
 .quad __interrupt_pf
+.quad 0
+.quad __interrupt_mf
+.quad __interrupt_ac
+.quad __interrupt_mc
+.quad __interrupt_xm
+.quad __interrupt_ve
+.space 80
+.quad __interrupt_sx
 __interrupts_end:
 
 .text
@@ -28,8 +36,6 @@ __interrupts_end:
 .global __interrupt_\()\name
 
 __interrupt_\()\name:
-    .if \erc
-    .endif
     push %rbp
     mov %rsp,%rbp
     and $~16,%rsp
@@ -84,9 +90,14 @@ isr br,0,5
 isr ud,0,6
 isr nm,0,7
 isr df,1,8
-isr cps,0,9
 isr ts,1,10
 isr np,1,11
 isr ss,1,12
 isr gp,1,13
 isr pf,1,14
+isr mf,0,16
+isr ac,1,17
+isr mc,0,18
+isr xm,0,19
+isr ve,0,20
+isr sx,1,30

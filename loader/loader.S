@@ -92,6 +92,8 @@ __init_idt:
     lea __interrupts,%esi
     lea __idt,%edi
     .set_entry:
+    movl (%esi),%eax
+    je .set_entry
     movw (%esi),%ax
     movw %ax,(%edi)
     lea __gdt_code-__gdt,%eax
@@ -117,7 +119,9 @@ start_x64:
     mov %ebx,%edi
     .start_kernel:
     call start_kernel
-    _hlt:
+_hlt:
     cli
     hlt
     jmp _hlt
+
+
