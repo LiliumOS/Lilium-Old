@@ -8,8 +8,11 @@ _Noreturn void _hlt(void);
 
 void printk(const char* v);
 
+void clear(void);
+
 _Noreturn __attribute__((section(".text.init"))) void start_kernel(void* multiboot){
     (void)multiboot;
+    clear();
     printk("Hello World");
     _hlt();
 }
