@@ -23,7 +23,7 @@ __gdt_data:
 .byte 0x4f
 .byte 0
 __gdt_ptr:
-.short __gdt_ptr-__gdt
+.short __gdt_ptr-__gdt-1
 .quad __gdt
 
 .global _start
@@ -68,7 +68,7 @@ _start:
     mov %eax,%cr4
     mov $0xC0000080,%ecx
     rdmsr
-    or $256,%eax
+    or $257,%eax
     wrmsr
     mov %cr0,%eax
     or $0x80000000,%eax
