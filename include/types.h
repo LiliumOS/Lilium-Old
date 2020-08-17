@@ -8,6 +8,7 @@
 #include <stdint.h>
 
 typedef struct interrupt_frame{
+    unsigned char fxinfo[512];
     void* rbp; // Frame Base Address
     void* cr3; // Page Table Base Address
     uint64_t r15;
@@ -24,6 +25,7 @@ typedef struct interrupt_frame{
     uint64_t rcx;
     uint64_t rbx;
     uint64_t rax;
-} interrupt_frame;
+    uint64_t reserved;
+}__attribute__((aligned(16))) interrupt_frame;
 
 #endif //PHANTOMOS_TYPES_H

@@ -19,6 +19,7 @@ _Noreturn __attribute__((section(".text.init"))) void start_kernel(void* multibo
     uint32_t buf[5] = {0};
     cpuid(0,buf);
     printk((const char*)&buf[1]);
+    printk("\n");
     _hlt();
 }
 
@@ -26,11 +27,13 @@ __attribute__((section(".text.init"))) void* handle_interrupt(interrupt_frame* v
     (void)errc;
     switch(code){
         case 9: // #DF, _hlt for now
-            printk("Kernel received Double Fault");
+            printk("Kernel received Double Fault\n");
             _hlt();
         case 13: // #GP
-            printk("Kernel Received General Protection Exception");
+            printk("Kernel Received General Protection Exception\n");
         break;
+        case 2:
+            printk("Recieved Non-maskable Interrupt\n");
         default:
             ;
     }
