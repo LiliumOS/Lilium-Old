@@ -28,6 +28,7 @@ __interrupts:
 .quad __interrupt_ve
 .space 80
 .quad __interrupt_sx
+.quad 0
 __interrupts_end:
 
 .text
@@ -54,12 +55,18 @@ __interrupt_\()\name:
     push %r14
     push %r15
     mov %rbp,%rsi
+    mov %cr3,%rax
+    push %rax
+    push %rbp
+    mov %rsp,%rcx
     mov $\number,%rdi
     xor %rdx,%rdx
     .if \erc
     mov 8(%rbp),%edx
     .endif
     call handle_interrupt
+    mov %rsp,%rax
+    pop %rbp
     pop %r15
     pop %r14
     pop %r13

@@ -9,7 +9,8 @@ include_directories(include)
 add_subdirectory(ld)
 add_subdirectory(loader)
 
-add_executable(phantom src/start_kernel.c src/printk.c src/interrupts.S include/MachineInfo.h src/machine_info.S)
+add_executable(phantom src/start_kernel.c src/printk.c src/interrupts.S include/MachineInfo.h src/machine_info.S include/types.h
+        src/memcpy.c)
 
 target_compile_options(phantom PRIVATE -mno-red-zone -mno-mmx -mno-sse)
 

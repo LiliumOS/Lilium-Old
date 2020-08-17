@@ -5,6 +5,11 @@
 .global set_cr0
 .global clear_cr0
 .global get_cr0
+.global get_cr2
+.global set_cr4_bits
+.global clear_cr4
+.global write_cr4
+.global get_cr4
 
 cpuid:
     mov %rdi,%rax
@@ -12,8 +17,8 @@ cpuid:
     cpuid
     movl %eax,(%rsi)
     movl %ebx,4(%rsi)
-    movl %ecx,8(%rsi)
-    movl %edx,12(%rsi)
+    movl %edx,8(%rsi)
+    movl %ecx,12(%rsi)
     mov %rdi,%rax
     ret
 
@@ -46,4 +51,28 @@ clear_cr0:
 
 get_cr0:
     mov %cr0,%rax
+    ret
+
+get_cr2:
+    mov %cr2,%rax
+    ret
+
+set_cr4_bits:
+    mov %cr4,%rax
+    or %rdi,%rax
+    mov %rax,%cr4
+    ret
+
+clear_cr4:
+    mov %cr4,%rax
+    andn %rdi,%rax,%rax
+    mov %rax,%cr4
+    ret
+
+get_cr4:
+    mov %cr4,%rax
+    ret
+
+write_cr4:
+    mov %rdi,%cr4
     ret
