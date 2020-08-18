@@ -13,6 +13,7 @@ struct vram_entry{
 
 #define VRAM_MAX_X 80
 #define VRAM_MAX_Y 25
+#define TAB_STOP 4
 
 extern volatile struct vram_entry __vram_start[VRAM_MAX_Y][VRAM_MAX_X];
 
@@ -36,8 +37,19 @@ void printk(const char* c){
                     x = 0;
                     y++;
                 break;
-                case 0x7F:
+                case 8:
                     x--;
+                break;
+                case 0x7F:
+                    __vram_start[y][x].asciz = 0;
+                break;
+                case '\r':
+                    x = 0;
+                break;
+                case '\t':
+                    do{
+                        x++;
+                    }while(x%TAB_STOP!=0);
                 break;
             }
         }else{
