@@ -65,8 +65,8 @@ void printk(const char* c){
                 }
             }
             for(int col = 0; col < VRAM_MAX_X; col++) {
-                __vram_start[0][col].cl = 0;
-                __vram_start[0][col].asciz = 0;
+                __vram_start[VRAM_MAX_Y-1][col].cl = 0;
+                __vram_start[VRAM_MAX_Y-1][col].asciz = 0;
             }
         }
     }

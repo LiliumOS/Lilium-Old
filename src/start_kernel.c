@@ -18,8 +18,13 @@ _Noreturn __attribute__((section(".text.init"))) void start_kernel(void* multibo
     printk("Hello World\n");
     uint32_t buf[5] = {0};
     cpuid(0,buf);
-    printk((const char*)&buf[1]);
-    printk("\n");
+    char ticker[2] = {'0',0};
+    for(int i = 0; i < 24; i++) {
+        printk((const char*)&buf[1]);
+        printk(ticker);
+        ticker[0]++;
+        printk("\n");
+    }
     _hlt();
 }
 
