@@ -16,8 +16,8 @@
  */
 uint32_t* cpuid(uint32_t idno,uint32_t* output,... /*uint32_t supplementary*/);
 
-uint64_t rdmsr(uint32_t msr);
-void wrmsr(uint32_t msr,uint64_t value);
+uint64_t rdmsr(uint64_t msr);
+void wrmsr(uint64_t msr,uint64_t value);
 
 enum CR0{
     PE = 1,
