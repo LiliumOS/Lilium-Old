@@ -2,6 +2,8 @@
 // Created by chorm on 2020-07-21.
 //
 
+#include <signal.h>
+
 struct vram_entry{
     char asciz;
     unsigned char cl;
@@ -14,7 +16,7 @@ struct vram_entry{
 
 extern volatile struct vram_entry __vram_start[VRAM_MAX_Y][VRAM_MAX_X];
 
-static short x,y;
+static volatile sig_atomic_t x,y;
 
 void clear(void){
     for(unsigned short y = 0;y<VRAM_MAX_Y;y++)
@@ -22,6 +24,8 @@ void clear(void){
             __vram_start[y][x].asciz = 0;
             __vram_start[y][x].cl = 0;
         }
+    x = 0;
+    y = 0;
 }
 
 void printk(const char* c){

@@ -60,7 +60,6 @@ __interrupt_\()\name:
     push %rax
     push %rbp
     sub $512,%rsp
-    fxsave 512(%rsp)
     mov %rsp,%rcx
     mov $\number,%rdi
     xor %rdx,%rdx
@@ -69,7 +68,6 @@ __interrupt_\()\name:
     .endif
     call handle_interrupt
     mov %rsp,%rax
-    fxrstor 512(%rsp)
     add $512,%rsp
     pop %rbp
     pop %r15
