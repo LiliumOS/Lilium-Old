@@ -117,6 +117,7 @@ start_x64:
     # Now we can use x86_64 instructions
     xor %rdi,%rdi
     mov %ebx,%edi
+    and $~15,%rsp
     .start_kernel:
     call start_kernel
 _hlt:
