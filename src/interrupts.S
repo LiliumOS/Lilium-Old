@@ -39,7 +39,7 @@ __interrupts_end:
 __interrupt_\()\name:
     push %rbp
     mov %rsp,%rbp
-    and $~16,%rsp
+    and $~15,%rsp
     pushq $0
     push %rax
     push %rbx
