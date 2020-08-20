@@ -77,12 +77,15 @@ _start:
     or $257,%eax
     wrmsr
     mov %cr0,%eax
-    or $0x80000000,%eax
+    or $0x80000002,%eax
+    and $~4,%eax
     mov %eax,%cr0
     call __init_idt
     lgdt __gdt_ptr
     lidt __idt_ptr
-    sti
+    mov %cr4,%eax
+    or $1536,%eax
+    mov %eax,%cr4
     pop %edx
     jmp $__gdt_code-__gdt, $start_x64
 
@@ -115,6 +118,7 @@ __init_idt:
 
 start_x64:
     # Now we can use x86_64 instructions
+    sti
     xor %rdi,%rdi
     mov %ebx,%edi
     and $~15,%rsp
