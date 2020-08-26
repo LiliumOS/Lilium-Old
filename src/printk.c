@@ -19,7 +19,10 @@ extern volatile struct vram_entry __vram_start[VRAM_MAX_Y][VRAM_MAX_X];
 
 static volatile sig_atomic_t x,y;
 
+static volatile sig_atomic_t screenColor = PRINTK_COLOR;
+
 void clear(void){
+    screenColor = PRINTK_COLOR;
     for(unsigned short y = 0;y<VRAM_MAX_Y;y++)
         for(unsigned short x = 0;x<VRAM_MAX_X;x++) {
             __vram_start[y][x].asciz = 0;
@@ -51,9 +54,17 @@ void printk(const char* c){
                         x++;
                     }while(x%TAB_STOP!=0);
                 break;
+                case '\x1b':
+                    c++;
+                    if(*c=='c')
+                        clear();
+                    else if(*c=='['){
+                        //TODO
+                    }
+                break;
             }
         }else{
-            __vram_start[y][x].cl = PRINTK_COLOR;
+            __vram_start[y][x].cl = screenColor;
             __vram_start[y][x++].asciz = *c;
         }
         if(x<0) {

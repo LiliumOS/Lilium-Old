@@ -3,6 +3,7 @@
 //
 
 #include <types.h>
+#include <acpi.h>
 #include <stdint.h>
 #include <MachineInfo.h>
 
@@ -25,6 +26,15 @@ _Noreturn __attribute__((section(".text.init"))) void start_kernel(void* multibo
         ticker[0]++;
         printk("\n");
     }
+
+    RDSP* rdsp = find_rdsp();
+
+    if(rdsp)
+        printk("Found RDSP\n");
+    else
+        printk("Could not find rdsp");
+    
+
     _hlt();
 }
 
