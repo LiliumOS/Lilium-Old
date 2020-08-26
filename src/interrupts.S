@@ -54,14 +54,14 @@ __interrupt_\()\name:
     push %r13
     push %r14
     push %r15
-    mov %rbp,%rsi
+    mov %rbp,%rdi
     mov %cr3,%rax
     push %rax
     push %rbp
     sub $512,%rsp
     fxsave (%rsp)
     mov %rsp,%rcx
-    mov $\number,%rdi
+    mov $\number,%rsi
     xor %rdx,%rdx
     .if \erc
     mov 8(%rbp),%edx

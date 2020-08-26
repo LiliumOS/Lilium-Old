@@ -12,7 +12,7 @@ find_rdsp:
     je .exit
     lea 16(%rax),%rax
     cmp %rax,%rdi
-    jbe .find
+    jae .find
     xor %rax, %rax
     .exit:
     ret

@@ -41,7 +41,8 @@ _Noreturn __attribute__((section(".text.init"))) void start_kernel(void* multibo
 __attribute__((section(".text.init"))) void* handle_interrupt(interrupt_frame* v, uint64_t code,uint32_t errc,void* rsp){
     (void)errc;
     switch(code){
-        case 9: // #DF, _hlt for now
+        case 8: // #DF, _hlt for now
+            clear();
             printk("Kernel received Double Fault\n");
             _hlt();
         case 13: // #GP
