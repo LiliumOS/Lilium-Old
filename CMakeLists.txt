@@ -24,7 +24,7 @@ endif()
 add_executable(phantom src/start_kernel.c src/printk.c src/interrupts.S include/MachineInfo.h src/machine_info.S include/types.h
         src/memcpy.c include/bus.h src/bus.S src/acpi.S)
 
-target_compile_options(phantom PRIVATE -mno-red-zone -msse -mno-mmx -mno-sse2 -mno-sse3 -mno-ssse3 -mno-sse4)
+target_compile_options(phantom PRIVATE -mno-red-zone -msse -mno-mmx -msse2 -mno-sse3 -mno-ssse3 -mno-sse4)
 
 target_link_options(phantom PRIVATE "-Wl,-Map=${CMAKE_CURRENT_BINARY_DIR}/phantom.map")
 

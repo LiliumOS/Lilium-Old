@@ -26,7 +26,7 @@ __interrupts:
 .quad __interrupt_mc
 .quad __interrupt_xm
 .quad __interrupt_ve
-.space 80
+.space 72
 .quad __interrupt_sx
 .quad 0
 __interrupts_end:
@@ -37,6 +37,9 @@ __interrupts_end:
 .global __interrupt_\()\name
 
 __interrupt_\()\name:
+    .if (~\erc)&1
+    sub $4,%rsp
+    .endif
     push %rbp
     mov %rsp,%rbp
     and $~15,%rsp
@@ -54,12 +57,12 @@ __interrupt_\()\name:
     push %r13
     push %r14
     push %r15
-    mov %rbp,%rdi
     mov %cr3,%rax
     push %rax
     push %rbp
     sub $512,%rsp
     fxsave (%rsp)
+    mov %rsp,%rdi
     mov %rsp,%rcx
     mov $\number,%rsi
     xor %rdx,%rdx
@@ -86,9 +89,7 @@ __interrupt_\()\name:
     pop %rbx
     pop %rax
     leave
-    .if \erc
     add $4,%rsp
-    .endif
     iretq
 .endm
 

@@ -118,7 +118,10 @@ __init_idt:
 
 start_x64:
     # Now we can use x86_64 instructions
+
+    xor %rbp,%rbp
     sti
+
     xor %rdi,%rdi
     mov %ebx,%edi
     and $~15,%rsp
