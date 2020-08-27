@@ -33,7 +33,6 @@ _Noreturn __attribute__((section(".text.init"))) void start_kernel(void* multibo
         printk("Found RDSP\n");
     else
         printk("Could not find rdsp");
-    
 
     _hlt();
 }
@@ -45,6 +44,9 @@ __attribute__((section(".text.init"))) void* handle_interrupt(interrupt_frame* v
             clear();
             printk("Kernel received Double Fault\n");
             _hlt();
+        case 14: // #PF
+            printk("Kernel Received Page Fault\n");
+        break;
         case 13: // #GP
             printk("Kernel Received General Protection Exception\n");
         break;

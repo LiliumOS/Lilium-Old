@@ -14,7 +14,7 @@ __interrupts:
 .quad __interrupt_ud
 .quad __interrupt_nm
 .quad __interrupt_df
-.quad 0
+.quad __interrupt_cso
 .quad __interrupt_ts
 .quad __interrupt_np
 .quad __interrupt_ss
@@ -102,6 +102,7 @@ isr br,0,5
 isr ud,0,6
 isr nm,0,7
 isr df,1,8
+isr cso,0,9
 isr ts,1,10
 isr np,1,11
 isr ss,1,12
