@@ -13,6 +13,11 @@ include(GNUInstallDirs)
 
 set(PHANTOMOS_INSTALL_BOOTDIR boot CACHE PATH "Path to install the kernel and map into")
 
+option(PHANTOMOS_ENABLE_L5PAGING "Enables use of the PML5T on processors that support it" OFF)
+mark_as_advanced(PHANTOMOS_ENABLE_L5PAGING)
+option(PHANTOMOS_ENABLE_UEFI_SUPPORT "Enables support for UEFI Platforms" OFF)
+
+
 if(IS_ABSOLUTE ${PHANTOMOS_INSTALL_BOOTDIR})
     set(PHANTOMOS_FULL_INSTALL_BOOTDIR ${PHANTOMOS_INSTALL_BOOTDIR})
 elseif(CMAKE_INSTALL_PREFIX STREQUAL "/usr" OR CMAKE_INSTALL_PREFIX STREQUAL "/usr/local")
@@ -22,7 +27,8 @@ else()
 endif()
 
 add_executable(phantom src/start_kernel.c src/printk.c src/interrupts.S include/MachineInfo.h src/machine_info.S include/types.h
-        src/memcpy.c include/bus.h src/bus.S src/acpi.S)
+        src/memcpy.c include/bus.h src/bus.S src/acpi.S
+        include/acpi.h include/elf.h include/memcpy.h include/memory.h)
 
 target_compile_options(phantom PRIVATE -mno-red-zone -msse -mno-mmx -msse2 -mno-sse3 -mno-ssse3 -mno-sse4)
 
