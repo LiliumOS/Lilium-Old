@@ -6,6 +6,7 @@
 #include <acpi.h>
 #include <stdint.h>
 #include <MachineInfo.h>
+#include <stdlib.h>
 
 _Noreturn void _hlt(void);
 
@@ -28,11 +29,32 @@ _Noreturn __attribute__((section(".text.init"))) void start_kernel(void* multibo
     }
 
     RDSP* rdsp = find_rdsp();
+    RDSP_v2* rdspv2 = NULL;
+    APICDSTHeader* rsdt_or_xsdt;
+    if(rdsp) {
+        unsigned char chksm = 0;
+        for(unsigned char* sum_ptr = (unsigned char*)rdsp;sum_ptr!=(unsigned char*)(rdsp+1);sum_ptr++)
+            chksm += *sum_ptr;
+        if(chksm){
+            printk("RDSP Checksum failure");
+            _hlt();
+        }
+        if(rdsp->revision>=2){
+            rdspv2 = (RDSP_v2*)rdsp;
+            for(unsigned char* sum_ptr = (unsigned char*)rdspv2;sum_ptr!=(unsigned char*)(rdspv2+1);sum_ptr++)
+                chksm += *sum_ptr;
+            if(chksm){
+                printk("RDSPv2 Checksum failure");
+                _hlt();
+            }
+            rsdt_or_xsdt = (APICDSTHeader *) rdspv2->xdst_addr;
+        }else{
+            rsdt_or_xsdt = (APICDSTHeader *)rdsp->rdst_addr;
+        }
 
-    if(rdsp)
-        printk("Found RDSP\n");
-    else
-        printk("Could not find rdsp");
+    }
+
+
 
     _hlt();
 }
