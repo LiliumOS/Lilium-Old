@@ -12,6 +12,7 @@
 .global get_cr4
 
 cpuid:
+    mov %rbx,%r10
     mov %rdi,%rax
     mov %rdx,%rcx
     cpuid
@@ -20,6 +21,7 @@ cpuid:
     movl %edx,8(%rsi)
     movl %ecx,12(%rsi)
     mov %rdi,%rax
+    mov %r10,%rbx
     ret
 
 rdmsr:
