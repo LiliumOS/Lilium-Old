@@ -10,6 +10,7 @@
 .global clear_cr4
 .global write_cr4
 .global get_cr4
+.global read_cr3
 
 cpuid:
     mov %rbx,%r10
@@ -77,4 +78,8 @@ get_cr4:
 
 write_cr4:
     mov %rdi,%cr4
+    ret
+
+read_cr3:
+    mov %cr3,%rax
     ret
