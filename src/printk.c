@@ -5,6 +5,8 @@
 #include <signal.h>
 #include <stdatomic.h>
 
+#include <screen.h>
+#include <stdarg.h>
 
 struct vram_entry{
     char asciz;
@@ -36,6 +38,62 @@ void clear(void){
         }
     x = 0;
     y = 0;
+    atomic_flag_clear_explicit(&in_printk,memory_order_release);
+}
+
+void putc(char c){
+    if(atomic_flag_test_and_set_explicit(&in_printk,memory_order_acquire))
+        return;
+    if(c<' '||c==0x7F){
+        switch(c){
+            case '\n':
+                x = 0;
+                y++;
+                break;
+            case 8:
+                x--;
+                break;
+            case 0x7F:
+                __vram_start[y][x].asciz = 0;
+                break;
+            case '\r':
+                x = 0;
+                break;
+            case '\t':
+                do{
+                    x++;
+                }while(x%TAB_STOP!=0);
+                break;
+        }
+    }else{
+        __vram_start[y][x].cl = screenColor;
+        __vram_start[y][x++].asciz = c;
+    }
+    if(x<0) {
+        y--;
+        x+=VRAM_MAX_X;
+    }else if(x>=VRAM_MAX_X){
+        y++;
+        x-=VRAM_MAX_X;
+    }
+
+    if(y<0){ // I'll let this wrap, I don't want to deal with scrolling up
+        x=0;
+        y+=VRAM_MAX_Y;
+    }else while(y>=VRAM_MAX_Y){ // While loop to scroll as much as necessary (should only need to scroll once)
+            x=0;
+            y--;
+            for(int row = 1; row < VRAM_MAX_Y; row++) { // Start at one to not scroll into row -1
+                for(int col = 0; col < VRAM_MAX_X; col++) {
+                    __vram_start[row-1][col].cl = __vram_start[row][col].cl;
+                    __vram_start[row-1][col].asciz = __vram_start[row][col].asciz;
+                }
+            }
+            for(int col = 0; col < VRAM_MAX_X; col++) {
+                __vram_start[VRAM_MAX_Y-1][col].cl = 0;
+                __vram_start[VRAM_MAX_Y-1][col].asciz = 0;
+            }
+        }
     atomic_flag_clear_explicit(&in_printk,memory_order_release);
 }
 
@@ -102,6 +160,12 @@ void printk(const char* c){
             }
         }
 
-        atomic_flag_clear_explicit(&in_printk,memory_order_release);
+
     }
+    atomic_flag_clear_explicit(&in_printk,memory_order_release);
+}
+
+
+void vprintf(const char* fmt, va_list list){
+
 }
