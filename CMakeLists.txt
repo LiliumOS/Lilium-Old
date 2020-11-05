@@ -8,6 +8,8 @@ set(CMAKE_C_STANDARD_REQUIRED TRUE)
 
 include_directories(include)
 
+add_compile_options(-Wno-multichar -Wno-int-to-pointer-cast)
+
 add_subdirectory(ld)
 add_subdirectory(loader)
 
@@ -28,6 +30,22 @@ else()
     set(PHANTOMOS_FULL_INSTALL_BOOTDIR "${CMAKE_INSTALL_PREFIX}/${PHANTOMOS_INSTALL_BOOTDIR}")
 endif()
 
+message(STATUS "Installing Kernel to ${PHANTOMOS_FULL_INSTALL_BOOTDIR}")
+
+
+set(PHANTOMOS_KERNEL_DYNLIBPATH /system/lib CACHE PATH "Path within the Search prefix to search for kernel libraries")
+set(PHANTOMOS_KERNEL_SEARCH_PREFIX /boot;/ CACHE PATH "Paths to Search for the kernel and modules") 
+set(PHANTOMOS_INSTALL_DYNLIBDIR system/lib CACHE PATH "Path to install kernel libraries into (relative to PHANTOMOS_INSTALL_BOOTDIR)")
+if(IS_ABSOLUTE ${PHANTOMOS_INSTALL_DYNLIBDIR})
+    set(PHANTOMSOS_FULL_INSTALL_DYNLIBDIR ${PHANTOMOS_INSTALL_DYNLIBDIR})
+else()
+    set(PHANTOMSOS_FULL_INSTALL_DYNLIBDIR ${PHANTOMOS_FULL_INSTALL_BOOTDIR}/${PHANTOMOS_INSTALL_DYNLIBDIR})
+endif()
+
+
+message(STATUS "Installing Kernel Libraries to ${PHANTOMSOS_FULL_INSTALL_DYNLIBDIR}")
+
+
 add_executable(phantom src/start_kernel.c src/printk.c src/interrupts.S include/MachineInfo.h src/machine_info.S include/types.h
         src/memcpy.c include/bus.h src/bus.S src/acpi.S
         include/acpi.h include/elf.h include/memcpy.h include/memory.h)
@@ -37,5 +55,6 @@ target_compile_options(phantom PRIVATE -mno-red-zone -msse -mno-mmx -msse2 -mno-
 target_link_options(phantom PRIVATE "-Wl,-Map=${CMAKE_CURRENT_BINARY_DIR}/phantom.map")
 
 target_link_libraries(phantom loader-amd64 phantom-kernel-ld-scripts)
+
 
 

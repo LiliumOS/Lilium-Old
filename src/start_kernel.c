@@ -49,7 +49,7 @@ _Noreturn __attribute__((section(".text.init"))) void start_kernel(void* multibo
             }
             rsdt_or_xsdt = (APICDSTHeader *) rdspv2->xdst_addr;
         }else{
-            rsdt_or_xsdt = (APICDSTHeader *)rdsp->rdst_addr;
+            rsdt_or_xsdt = (APICDSTHeader *)(unsigned long long)rdsp->rdst_addr;
         }
 
     }
