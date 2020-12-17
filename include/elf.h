@@ -505,6 +505,8 @@ typedef struct {
 //EM_VE = 251,            // NEC SX-Aurora VE
 #define EM_VE 251
 
+#define EM_65816 257 // WDC 65816
+
 typedef struct {
     Elf64_Word p_type;
     Elf64_Word p_flags;
