@@ -22,7 +22,7 @@
 #  to programs written to be employed by the user.
 
 set(CMAKE_SYSTEM_PROCESSOR x86_64)
-set(PHANTOM_TARGET_NAME ${CMAKE_SYSTEM_PROCESSOR}-pc-none-eabi)
+set(PHANTOM_TARGET_NAME ${CMAKE_SYSTEM_PROCESSOR}-pc-elf)
 
 find_program(CMAKE_C_COMPILER NAMES clang ${PHANTOM_TARGET_NAME}-clang ${PHANTOM_TARGET_NAME}-cc ${PHANTOM_TARGET_NAME}-gcc
         REQUIRED)
