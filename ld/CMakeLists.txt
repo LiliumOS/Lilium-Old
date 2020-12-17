@@ -1,4 +1,27 @@
 
+# ld/CMakeLists.txt
+# 
+# This file is part of PhantomOS.
+#
+# PhantomOS is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# PhantomOS is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with PhantomOS.  If not, see <https://www.gnu.org/licenses/>.
+#
+# PhantomOS is additionally distributed with a system call exemption
+# As an exeption to the above license, 
+#  proprietary software may interface with this software through the use of 
+#  "system calls" to access any of the routines made available by the PhantomOS 
+#  to programs written to be employed by the user.
+
 add_library(phantom-kernel-ld-scripts INTERFACE)
 
 add_dependencies(phantom-kernel-ld-scripts ${CMAKE_CURRENT_SOURCE_DIR}/x86_64-pc-phantom-kernel.ld)

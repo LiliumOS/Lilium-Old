@@ -21,9 +21,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 ## System Call Exemptions
 
-As an exeption to the above license, proprietary software may interface with this software through the use of "system calls" to access any of the routines made available by the PhantomOS to programs written to be employed by the user. If you convey versions of this software by any means, as defined by the GNU General Public License, you may choose to provide this exemption or to exclude the exemption, in which case, this provision should be removed from that conveyed copy. 
+As an exeption to the above license, proprietary software may interface with this software through the use of "system calls" to access any of the routines made available by the PhantomOS to programs written to be employed by the user. 
+If you convey versions of this software by any means, as defined by the GNU General Public License, you may choose to provide this exemption or to exclude the exemption, in which case, this provision should be removed from that conveyed copy. 
 
-## Loader License Code
+## PhantomOS Loader License
 
 The portion of the software located under the `loader/` subdirectory is Dual Licensed under the terms of the ZLib License and the Apache v2 license. See `loader/LICENSE-ZLIB` and `loader/LICENSE-APACHE` for details. 
 Persuant to the Apache v2 licenses, contributors to that portion authorize the developers to dual license those specific contributions as described above, in addition to the terms of the GNU General Public License, at version 3 or any later version.
