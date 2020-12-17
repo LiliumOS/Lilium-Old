@@ -1,0 +1,27 @@
+name: C/C++ CI Windows
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build_msvc:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2.3.0
+      with:
+        submodules: true 
+    - name: Install Dependencies
+      uses: crazy-max/ghaction-chocolatey@v1
+        with:
+          args: install llvm cmake ninja
+    - name: Windows clang
+      uses: LightningCreations/action-cmake-build@v1.2
+      with:
+        update-submodules: true
+        parallel: 8
+        configure-options: -GNinja
+        build-dir: ${{runner.workspace}}/build-clang
