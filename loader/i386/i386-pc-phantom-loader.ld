@@ -50,7 +50,7 @@ SECTIONS {
 
     .bss.stack ALIGN(4096):{
         __stack_tail = .;
-        . = .+4096;
+        . = . + 4096;
         __stack_head = .;
     } :data
     . = .;

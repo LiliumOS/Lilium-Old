@@ -16,8 +16,8 @@ jobs:
         submodules: true 
     - name: Install Dependencies
       uses: crazy-max/ghaction-chocolatey@v1
-        with:
-          args: install llvm cmake ninja
+      with:
+        args: install llvm cmake ninja
     - name: Windows clang
       uses: LightningCreations/action-cmake-build@v1.2
       with:

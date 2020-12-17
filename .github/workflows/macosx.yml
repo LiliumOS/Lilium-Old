@@ -15,7 +15,7 @@ jobs:
       with:
         submodules: true 
     - name: Clang Build
-      uses:LightningCreations/action-cmake-build@v1.2
+      uses: LightningCreations/action-cmake-build@v1.2
       with:
         # C Compiler for toolchain
         cc: clang # optional
