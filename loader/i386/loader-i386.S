@@ -1,5 +1,5 @@
 
-// ld/i386/loader-i386.S
+// loader/i386/loader-i386.S
 // 
 // This file is part of the PhantomOS loader.
 //

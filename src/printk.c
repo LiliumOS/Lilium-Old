@@ -142,8 +142,16 @@ void printk(const char* c){
                 break;
                 case '\x1b':
                     c++;
-                    if(*c=='c')
-                        clear();
+                    if(*c=='c'){
+                        screenColor = PRINTK_COLOR;
+                        for(unsigned short y = 0;y<VRAM_MAX_Y;y++)
+                            for(unsigned short x = 0;x<VRAM_MAX_X;x++) {
+                                __vram_start[y][x].asciz = 0;
+                                __vram_start[y][x].cl = 0;
+                            }
+                        x = 0;
+                        y = 0;
+                    }
                     else if(*c=='['){
                         //TODO
                     }
