@@ -34,7 +34,7 @@ set(CMAKE_C_STANDARD_REQUIRED TRUE)
 
 include_directories(include)
 
-add_compile_options(-Wno-multichar -Wno-int-to-pointer-cast)
+add_compile_options(-Wno-multichar -Wno-int-to-pointer-cast -nostdinc)
 
 add_subdirectory(ld)
 add_subdirectory(loader)
@@ -82,5 +82,5 @@ target_link_options(phantom PRIVATE "-Wl,-Map=${CMAKE_CURRENT_BINARY_DIR}/phanto
 
 target_link_libraries(phantom loader-amd64 phantom-kernel-ld-scripts)
 
-
+install(TARGETS phantom-image DESTINATION ${PHANTOMOS_INSTALL_BOOTDIR})
 

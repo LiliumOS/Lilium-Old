@@ -36,7 +36,7 @@ target_compile_options(phantom-image PRIVATE "-m32" "-mno-sse" "-mno-mmx")
 set_target_properties(phantom-image
         PROPERTIES LINK_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/i386-pc-phantom-loader.ld)
 
-target_link_options(phantom-image PRIVATE -m32 "-Wl,-T${CMAKE_CURRENT_SOURCE_DIR}/i386-pc-phantom-loader.ld")
+target_link_options(phantom-image PRIVATE -m32 "-Wl,-T${CMAKE_CURRENT_SOURCE_DIR}/i386-pc-phantom-loader.ld" -march=i686)
 
 add_dependencies(phantom-image phantom)
 

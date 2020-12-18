@@ -25,7 +25,7 @@
 #include <acpi.h>
 #include <stdint.h>
 #include <MachineInfo.h>
-#include <stdlib.h>
+#include <stddef.h>
 
 _Noreturn void _hlt(void);
 

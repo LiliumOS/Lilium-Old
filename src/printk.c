@@ -22,7 +22,6 @@
 //  to programs written to be employed by the user.
 
 #include <signal.h>
-#include <stdatomic.h>
 
 #include <screen.h>
 #include <stdarg.h>
@@ -44,11 +43,8 @@ static volatile sig_atomic_t x,y;
 
 static volatile sig_atomic_t screenColor = PRINTK_COLOR;
 
-static atomic_flag in_printk = ATOMIC_FLAG_INIT;
 
 void clear(void){
-    if(atomic_flag_test_and_set_explicit(&in_printk,memory_order_acquire))
-        return;
     screenColor = PRINTK_COLOR;
     for(unsigned short y = 0;y<VRAM_MAX_Y;y++)
         for(unsigned short x = 0;x<VRAM_MAX_X;x++) {
@@ -57,12 +53,9 @@ void clear(void){
         }
     x = 0;
     y = 0;
-    atomic_flag_clear_explicit(&in_printk,memory_order_release);
 }
 
 void putc(char c){
-    if(atomic_flag_test_and_set_explicit(&in_printk,memory_order_acquire))
-        return;
     if(c<' '||c==0x7F){
         switch(c){
             case '\n':
@@ -113,12 +106,9 @@ void putc(char c){
                 __vram_start[VRAM_MAX_Y-1][col].asciz = 0;
             }
         }
-    atomic_flag_clear_explicit(&in_printk,memory_order_release);
 }
 
 void printk(const char* c){
-    if(atomic_flag_test_and_set_explicit(&in_printk,memory_order_acquire))
-        return;
     for(;*c;c++){
         if(*c<' '||*c==0x7F){
             switch(*c){
@@ -189,7 +179,6 @@ void printk(const char* c){
 
 
     }
-    atomic_flag_clear_explicit(&in_printk,memory_order_release);
 }
 
 
