@@ -22,11 +22,17 @@
 #  to programs written to be employed by the user.
 
 set(CMAKE_CROSSCOMPILING ON)
-set(CMAKE_SYSTEM_PROCESSOR x86_64)
+set(CMAKE_SYSTEM_PROCESSOR ${CMAKE_HOST_SYSTEM_PROCESSOR} CACHE STRING "Set the name of the target. Only x86_64 is supported currently")
 set(PHANTOM_TARGET_NAME ${CMAKE_SYSTEM_PROCESSOR}-pc-elf)
 
 find_program(CMAKE_C_COMPILER NAMES clang ${PHANTOM_TARGET_NAME}-clang ${PHANTOM_TARGET_NAME}-cc ${PHANTOM_TARGET_NAME}-gcc
         REQUIRED)
+
+find_program(QEMU qemu-system-${CMAKE_SYSTEM_PROCESSOR})
+
+if(QEMU)
+    set(CMAKE_CROSSCOMPILING_EMULATOR ${QEMU} -kernel)
+endif()
 
 set(CMAKE_C_COMPILER_TARGET ${PHANTOM_TARGET_NAME})
 set(CMAKE_ASM_COMPILER_TARGET ${PHANTOM_TARGET_NAME})

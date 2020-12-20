@@ -29,13 +29,19 @@ set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/cross/toolchain.cmake CACHE
 project(PhantomOS C ASM)
 
 message(STATUS "Building Phantom for ${PHANTOM_TARGET_NAME}")
-
-if(WIN32)
-   set(_PHANTOMOS_USE_LLD_INIT ON)
-else()
-   set(_PHANTOMOS_USE_LLD_INIT OFF)
+if(NOT DEFINED PHANTOMOS_USE_LLD_INIT_SET)
+    if(WIN32)
+    set(_PHANTOMOS_USE_LLD_INIT ON)
+    else()
+    find_program(DETECT_LLD NAMES ld.lld ${PHANTOM_TARGET_NAME}-ld.lld)
+    if(DETECT_LLD)
+        set(_PHANTOMOS_USE_LLD_INIT ON)
+    else()
+        set(_PHANTOMOS_USE_LLD_INIT OFF)
+    endif()
+    endif()
+    set(PHANTOMOS_USE_LLD_INIT_SET "" CACHE INTERNAL "")
 endif()
-
 option(PHANTOMOS_USE_LLD "Use lld to link, instead of gnu ld" ${_PHANTOMOS_USE_LLD_INIT})
 
 if(PHANTOMOS_USE_LLD)
