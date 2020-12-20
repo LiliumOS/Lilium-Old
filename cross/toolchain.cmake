@@ -21,11 +21,15 @@
 #  "system calls" to access any of the routines made available by the PhantomOS 
 #  to programs written to be employed by the user.
 
+set(CMAKE_CROSSCOMPILING ON)
 set(CMAKE_SYSTEM_PROCESSOR x86_64)
 set(PHANTOM_TARGET_NAME ${CMAKE_SYSTEM_PROCESSOR}-pc-elf)
 
 find_program(CMAKE_C_COMPILER NAMES clang ${PHANTOM_TARGET_NAME}-clang ${PHANTOM_TARGET_NAME}-cc ${PHANTOM_TARGET_NAME}-gcc
         REQUIRED)
+
+set(CMAKE_C_COMPILER_TARGET ${PHANTOM_TARGET_NAME})
+set(CMAKE_ASM_COMPILER_TARGET ${PHANTOM_TARGET_NAME})
 
 find_program(CMAKE_AR NAMES ${PHANTOM_TARGET_NAME}-ar llvm-ar ${PHANTOM_TARGET_NAME}-llvm-ar ar
         REQUIRED)

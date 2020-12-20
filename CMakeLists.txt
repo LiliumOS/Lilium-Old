@@ -28,6 +28,20 @@ cmake_minimum_required(VERSION 3.15)
 set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/cross/toolchain.cmake CACHE FILEPATH "Use the toolchain provided by the build script by default")
 project(PhantomOS C ASM)
 
+message(STATUS "Building Phantom for ${PHANTOM_TARGET_NAME}")
+
+if(WIN32)
+   set(_PHANTOMOS_USE_LLD_INIT ON)
+else()
+   set(_PHANTOMOS_USE_LLD_INIT OFF)
+endif()
+
+option(PHANTOMOS_USE_LLD "Use lld to link, instead of gnu ld" ${_PHANTOMOS_USE_LLD_INIT})
+
+if(PHANTOMOS_USE_LLD)
+    message(STATUS "Linking with lld")
+    add_link_options(-fuse-ld=lld)
+endif()
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED TRUE)
