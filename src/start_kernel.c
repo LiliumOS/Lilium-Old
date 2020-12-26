@@ -1,4 +1,4 @@
-// memcpy.c
+// start_kernel.c
 // 
 // This file is part of PhantomOS.
 //
