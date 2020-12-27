@@ -10,17 +10,11 @@ typedef signed short int16_t;
 typedef unsigned int uint32_t;
 typedef signed int int32_t;
 
-#ifndef __x86_64__
-typedef unsigned long uint64_t;
-typedef signed long int64_t;
-#define UINT64_C(v) v ## ul
-#define INT64_C(v) v ## l
-#else
+
 typedef unsigned long long uint64_t;
 typedef signed long long int64_t;
 #define UINT64_C(v) v ## ull
 #define INT64_C(v) v ## ll
-#endif
 
 typedef uint64_t uintmax_t;
 typedef int64_t intmax_t;
