@@ -25,48 +25,55 @@
 
 ENTRY(_start)
 
+PHDRS {
+    gdt PT_LOAD;
+    text PT_LOAD;
+    data PT_LOAD;
+    paging PT_LOAD;
+}
+
 SECTIONS {
     . = 0x1000;
 
     .data.gdt ALIGN(4096):{
         KEEP(*(.data.gdt));
-    }
+    } :gdt
 
     . = 0x20000;
     .text ALIGN(1024):{
         *(.text);
-    }
+    } :text
     .text.init ALIGN(1024):{
         __text_init_start = .;
         KEEP(*(.text.init));
         __text_init_end = .;
-    }
+    } :text
     .syscall ALIGN(1024):{
         KEEP(*(.syscall));
         __syscall_end = .;
-    }
+    } :text
     .rodata ALIGN(1024):{
         *(.rodata);
-    }
+    } :text
     .rodata.init ALIGN(1024):{
         __rodata_init_start = .;
         KEEP(*(.rodata.init));
         __rodata_init_end = .;
-    }
+    } :text
     .data ALIGN(1024):{
         *(.data);
-    }
+    } :data
     .data.init ALIGN(1024):{
         __data_init_start = .;
         KEEP(*(.data.init));
         __data_init_end = .;
-    }
+    } :data
     .bss ALIGN(1024):{
         __bss_start = .;
         *(.bss)
         *(COMMON)
         __bss_end = .;
-    }
+    } :data
     __vram_start = 0xb8000;
     .data.pt ALIGN(4096):{
         . = .;
@@ -75,6 +82,6 @@ SECTIONS {
         __pdpt = . + 0x1000;
         __pdt = . + 0x2000;
         __pt  = . + 0x3000;
-    }
+    } : paging
 
 }
