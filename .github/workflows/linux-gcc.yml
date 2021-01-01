@@ -26,6 +26,7 @@ jobs:
       working-directory: ${{runner.workspace}}/tools
       if: steps.tools-cache.outputs.cache-hit != 'true'
       run: |
+        echo $PATH
         wget https://ftp.gnu.org/gnu/binutils/binutils-2.35.tar.xz
         tar -x binutils-2.35.tar.xz
       shell: bash
