@@ -10,6 +10,10 @@ jobs:
   build_gcc:
     runs-on: ubuntu-latest
     steps:
+    - name: Install apt dependencies
+      run: |
+        sudo apt install curl
+      shell: bash
     - name: Get Date
       id: get-date
       run: |
