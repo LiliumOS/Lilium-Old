@@ -27,7 +27,6 @@ jobs:
       if: steps.tools-cache.outputs.cache-hit != 'true'
       run: |
         curl https://ftp.gnu.org/gnu/binutils/binutils-2.35.tar.xz | tar -Jx
-        mkdir binutils-2.35/build
       shell: bash
     - name: Build x86_64-pc-elf cross binutils
       working-directory: ${{runner.workspace}}/tools/binutils-2.35/build/x86_64-pc-elf
@@ -53,7 +52,6 @@ jobs:
         mv -v mpfr-4.1.0 gcc-10.2.0/mpfr
         curl https://ftp.gnu.org/gnu/mpc/mpc-1.2.1.tar.gz | tar -zx
         mv -v mpc-1.2.1 gcc-10.2.0/mpc
-        mkdir gcc-10.2.0/build
       shell: bash
     - name: Build x86_64-pc-elf gcc
       working-directory: ${{runner.workspace}}/tools/gcc-10.2.0/build/x86_64-pc-elf
