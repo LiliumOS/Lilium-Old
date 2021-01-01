@@ -10,9 +10,6 @@ jobs:
   build_gcc:
     runs-on: ubuntu-latest
     steps:
-    - name: Install apt dependencies
-      run: |
-        sudo apt install curl
       shell: bash
     - name: Get Date
       id: get-date
@@ -30,7 +27,8 @@ jobs:
       working-directory: ${{runner.workspace}}/tools
       if: steps.tools-cache.outputs.cache-hit != 'true'
       run: |
-        curl https://ftp.gnu.org/gnu/binutils/binutils-2.35.tar.xz | tar -Jx
+        wget https://ftp.gnu.org/gnu/binutils/binutils-2.35.tar.xz
+        tar -x binutils-2.35.tar.xz
       shell: bash
     - name: Build x86_64-pc-elf cross binutils
       working-directory: ${{runner.workspace}}/tools/binutils-2.35/build/x86_64-pc-elf
@@ -48,13 +46,17 @@ jobs:
       working-directory: ${{runner.workspace}}/tools
       if: steps.tools-cache.outputs.cache-hit != 'true'
       run: |
-        curl https://ftp.gnu.org/gnu/gcc/gcc-10.2.0/gcc-10.2.0.tar.xz | tar -Jx
-        mkdir gcc-10.2.0/build
-        curl https://ftp.gnu.org/gnu/gmp/gmp-6.2.1.tar.xz | tar -Jx
+        echo $PATH
+        wget https://ftp.gnu.org/gnu/gcc/gcc-10.2.0/gcc-10.2.0.tar.xz
+        tar -xf gcc-10.3.0.tar.xz
+        wget https://ftp.gnu.org/gnu/gmp/gmp-6.2.1.tar.xz
+        tar -xf gmp-6.2.1.tar.xz
         mv -v gmp-6.2.1 gcc-10.2.0/gmp
-        curl https://ftp.gnu.org/gnu/mpfr/mpfr-4.1.0.tar.xz | tar -Jx
+        wget https://ftp.gnu.org/gnu/mpfr/mpfr-4.1.0.tar.xz
+        tar -xf mpfr-4.1.0.tar.xz
         mv -v mpfr-4.1.0 gcc-10.2.0/mpfr
-        curl https://ftp.gnu.org/gnu/mpc/mpc-1.2.1.tar.gz | tar -zx
+        wget https://ftp.gnu.org/gnu/mpc/mpc-1.2.1.tar.gz
+        tar -xf mpc-1.2.1.tar.gz
         mv -v mpc-1.2.1 gcc-10.2.0/mpc
       shell: bash
     - name: Build x86_64-pc-elf gcc
