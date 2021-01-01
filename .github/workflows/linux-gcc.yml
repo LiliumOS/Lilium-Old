@@ -52,7 +52,7 @@ jobs:
         mv -v gmp-6.2.1 gcc-10.2.0/gmp
         curl https://ftp.gnu.org/gnu/mpfr/mpfr-4.1.0.tar.xz | tar -Jx
         mv -v mpfr-4.1.0 gcc-10.2.0/mpfr
-        curl https://ftp.gnu.org/gnu/mpc/mpc-1.2.1.tar.gz | tar -Jx
+        curl https://ftp.gnu.org/gnu/mpc/mpc-1.2.1.tar.gz | tar -zx
         mv -v mpc-1.2.1 gcc-10.2.0/mpc
         mkdir -p ${{runner.workspace}}/tools/gcc-10.2.0/build/x86_64-pc-elf
       shell: bash
