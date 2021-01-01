@@ -30,8 +30,6 @@
 
 
 ENTRY(_start)
-OUTPUT_FORMAT(elf32-i386)
-TARGET(elf32-i386)
 
 PHDRS {
     text PT_LOAD;

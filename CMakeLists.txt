@@ -25,6 +25,7 @@
 
 
 cmake_minimum_required(VERSION 3.15)
+
 set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/cross/toolchain.cmake CACHE FILEPATH "Use the toolchain provided by the build script by default")
 project(PhantomOS C ASM)
 
@@ -55,6 +56,8 @@ set(CMAKE_C_STANDARD_REQUIRED TRUE)
 include_directories(include)
 
 add_compile_options(-Wno-multichar -Wno-int-to-pointer-cast -nostdinc)
+
+add_subdirectory(filesystems)
 
 add_subdirectory(ld)
 add_subdirectory(loader)
