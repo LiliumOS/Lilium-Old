@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build_msvc:
+  build_windows:
     runs-on: windows-latest
     steps:
     - name: Checkout
@@ -18,10 +18,13 @@ jobs:
       uses: crazy-max/ghaction-chocolatey@v1
       with:
         args: install llvm ninja
+    - name: Update Path
+      run: |
+          echo "C:\Program Files\LLVM\bin;" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          echo "C:\ProgramData\chocolatey\lib\ninja\tools" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
     - name: Windows clang
       uses: LightningCreations/action-cmake-build@v1.2
       with:
-        update-submodules: true
         parallel: 8
         configure-options: -GNinja
         build-dir: ${{runner.workspace}}/build-clang
