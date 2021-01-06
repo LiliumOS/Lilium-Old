@@ -53,14 +53,14 @@ endif()
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED TRUE)
 
-include_directories(include ${CMAKE_SYSTEM_PROCESSOR}/include)
+include_directories(include ${PHANTOMOS_TARGET_PROCESSOR}/include)
 
 add_compile_options(-Wno-multichar -Wno-int-to-pointer-cast -nostdinc)
 
 add_subdirectory(filesystems)
 
 add_subdirectory(ld)
-add_subdirectory(${CMAKE_SYSTEM_PROCESSOR})
+add_subdirectory(${PHANTOMOS_TARGET_PROCESSOR})
 
 include(GNUInstallDirs)
 
@@ -101,7 +101,7 @@ target_compile_options(phantom PRIVATE -mno-red-zone -msse -mno-mmx -msse2 -mno-
 
 target_link_options(phantom PRIVATE "-Wl,-Map=${CMAKE_CURRENT_BINARY_DIR}/phantom.map")
 
-target_link_libraries(phantom loader-${CMAKE_SYSTEM_PROCESSOR} phantom-arch-x86_64 phantom-kernel-ld-scripts)
+target_link_libraries(phantom loader-${PHANTOMOS_TARGET_PROCESSOR} phantom-arch-x86_64 phantom-kernel-ld-scripts)
 
 install(TARGETS phantom-image DESTINATION ${PHANTOMOS_INSTALL_FULL_BOOTDIR})
 
