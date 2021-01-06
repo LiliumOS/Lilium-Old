@@ -16,7 +16,7 @@ jobs:
         echo "::set-output name=date::$(/bin/date -u "+%Y%m%d")"
       shell: bash
     - name: Cache tools
-      id: tools-cache
+      id: tools
       uses: actions/cache@v2
       with:
         path: ${{runner.workspace}}/tools/local
@@ -28,7 +28,7 @@ jobs:
         echo '${{runner.workspace}}/tools/local/bin' > $GITHUB_PATH
     - name: Extract binutils
       working-directory: ${{runner.workspace}}/tools
-      if: steps.tools-cache.outputs.cache-hit != 'true'
+      if: steps.tools.outputs.cache-hit != 'true'
       run: |
         echo "$PATH"
         curl https://ftp.gnu.org/gnu/binutils/binutils-2.35.tar.xz | tar -Jx
@@ -36,7 +36,7 @@ jobs:
       shell: bash
     - name: Build x86_64-pc-elf cross binutils
       working-directory: ${{runner.workspace}}/tools/binutils-2.35/build/x86_64-pc-elf
-      if: steps.tools-cache.outputs.cache-hit != 'true'
+      if: steps.tools.outputs.cache-hit != 'true'
       run: |
         CFLAGS="-O3" ${{runner.workspace}}/tools/binutils-2.35/configure --prefix=${{runner.workspace}}/tools/local --with-sysroot --enable-gold=default --target=x86_64-pc-elf
         make -j8
@@ -44,7 +44,7 @@ jobs:
       shell: bash       
     - name: Extract gcc 
       working-directory: ${{runner.workspace}}/tools
-      if: steps.tools-cache.outputs.cache-hit != 'true'
+      if: steps.tools.outputs.cache-hit != 'true'
       run: |
         echo $PATH
         curl https://ftp.gnu.org/gnu/gcc/gcc-10.2.0/gcc-10.2.0.tar.xz | tar -Jx
@@ -58,7 +58,7 @@ jobs:
       shell: bash
     - name: Build x86_64-pc-elf gcc
       working-directory: ${{runner.workspace}}/tools/gcc-10.2.0/build/x86_64-pc-elf
-      if: steps.tools-cache.outputs.cache-hit != 'true'
+      if: steps.tools.outputs.cache-hit != 'true'
       run: |
         CFLAGS="-O3" ${{runner.workspace}}/tools/gcc-10.2.0/configure --prefix=${{runner.workspace}}/tools/local --without-headers --target=x86_64-pc-elf --enable-languages=c,c++ --disable-shared --disable-decimal-float --disable-threads --disable-libatomic --disable-libgomp --disable-libquadmath --disable-libssp --disable-libvtv --disable-libstdcxx --enable-newlib
         make -j8
@@ -74,7 +74,7 @@ jobs:
         # C Compiler for toolchain
         cc: x86_64-pc-elf-gcc # optional
         parallel: 8
-        build-dir: ${{runner.workspace}}/build-clang 
+        build-dir: ${{runner.workspace}}/build-gcc 
         configure-options: -DPHANTOMOS_USE_LLD=OFF
 
 
