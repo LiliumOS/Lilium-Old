@@ -15,7 +15,7 @@ jobs:
       with:
         submodules: true 
     - name: Install Dependencies
-      uses: crazy-max/ghaction-chocolatey@v1.4
+      uses: crazy-max/ghaction-chocolatey@v1
       with:
         args: install llvm ninja
     - name: Windows clang
