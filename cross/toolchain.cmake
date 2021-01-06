@@ -21,8 +21,13 @@
 #  "system calls" to access any of the routines made available by the PhantomOS 
 #  to programs written to be employed by the user.
 
+string(TOLOWER ${CMAKE_HOST_SYSTEM_PROCESSOR} _PHANTOMOS_HOST_SYSTEM)
+if(_PHANTOMOS_HOST_SYSTEM STREQUAL "amd64")
+    set(_PHANTOMOS_HOST_SYSTEM "x86_64")
+endif
+
 set(CMAKE_CROSSCOMPILING ON)
-set(CMAKE_SYSTEM_PROCESSOR ${CMAKE_HOST_SYSTEM_PROCESSOR} CACHE STRING "Set the name of the target. Only x86_64 is supported currently")
+set(CMAKE_SYSTEM_PROCESSOR ${_PHANTOMOS_HOST_SYSTEM} CACHE STRING "Set the name of the target. Only x86_64 is supported currently")
 set(PHANTOM_TARGET_NAME ${CMAKE_SYSTEM_PROCESSOR}-pc-elf)
 
 find_program(CMAKE_C_COMPILER NAMES $ENV{CC} clang ${PHANTOM_TARGET_NAME}-clang ${PHANTOM_TARGET_NAME}-cc ${PHANTOM_TARGET_NAME}-gcc
