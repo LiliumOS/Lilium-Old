@@ -28,6 +28,6 @@
 # 
 
 
-add_library(loader-amd64 STATIC loader.S)
+add_library(loader-x86_64 STATIC loader.S)
 
 add_subdirectory(i386)

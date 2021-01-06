@@ -37,9 +37,9 @@ endif()
 set(CMAKE_C_COMPILER_TARGET ${PHANTOM_TARGET_NAME})
 set(CMAKE_ASM_COMPILER_TARGET ${PHANTOM_TARGET_NAME})
 
-find_program(CMAKE_AR NAMES ${PHANTOM_TARGET_NAME}-ar llvm-ar ${PHANTOM_TARGET_NAME}-llvm-ar ar
+find_program(CMAKE_AR NAMES $ENV{AR} ${PHANTOM_TARGET_NAME}-ar llvm-ar ${PHANTOM_TARGET_NAME}-llvm-ar ar
         REQUIRED)
-find_program(CMAKE_RANLIB NAMES ${PHANTOM_TARGET_NAME}-ranlib llvm-ranlib ${PHANTOM_TARGET_NAME}-llvm-ranlib ranlib
+find_program(CMAKE_RANLIB NAMES $ENV{RANLIB} ${PHANTOM_TARGET_NAME}-ranlib llvm-ranlib ${PHANTOM_TARGET_NAME}-llvm-ranlib ranlib
         REQUIRED)
 
 set(CMAKE_ASM_COMPILER ${CMAKE_C_COMPILER})

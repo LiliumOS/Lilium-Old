@@ -53,14 +53,14 @@ endif()
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED TRUE)
 
-include_directories(include)
+include_directories(include ${CMAKE_SYSTEM_PROCESSOR}/include)
 
 add_compile_options(-Wno-multichar -Wno-int-to-pointer-cast -nostdinc)
 
 add_subdirectory(filesystems)
 
 add_subdirectory(ld)
-add_subdirectory(loader)
+add_subdirectory(${CMAKE_SYSTEM_PROCESSOR})
 
 include(GNUInstallDirs)
 
@@ -95,15 +95,13 @@ endif()
 message(STATUS "Installing Kernel Libraries to ${PHANTOMSOS_FULL_INSTALL_DYNLIBDIR}")
 
 
-add_executable(phantom src/start_kernel.c src/printk.c src/interrupts.S include/MachineInfo.h src/machine_info.S include/types.h
-        src/memcpy.c include/bus.h src/bus.S src/acpi.S
-        include/acpi.h include/elf.h include/memcpy.h include/memory.h)
+add_executable(phantom src/memcpy.c include/elf.h include/memcpy.h include/memory.h)
 
 target_compile_options(phantom PRIVATE -mno-red-zone -msse -mno-mmx -msse2 -mno-sse3 -mno-ssse3 -mno-sse4)
 
 target_link_options(phantom PRIVATE "-Wl,-Map=${CMAKE_CURRENT_BINARY_DIR}/phantom.map")
 
-target_link_libraries(phantom loader-amd64 phantom-kernel-ld-scripts)
+target_link_libraries(phantom loader-${CMAKE_SYSTEM_PROCESSOR} phantom-arch-x86_64 phantom-kernel-ld-scripts)
 
-install(TARGETS phantom-image DESTINATION ${PHANTOMOS_INSTALL_BOOTDIR})
+install(TARGETS phantom-image DESTINATION ${PHANTOMOS_INSTALL_FULL_BOOTDIR})
 
