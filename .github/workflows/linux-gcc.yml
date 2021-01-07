@@ -20,8 +20,8 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ${{runner.workspace}}/tools/local
-        key: ${{matrix.config.name}}-phantomos-tools-${{steps.get-date.outputs.date}}
-        restore-keys: ${{matrix.config.name}}-phantomos-tools-
+        key: ${{runner.os}}-phantomos-tools-gcc-x86_64-pc-elf
+        restore-keys: ${{runner.os}}-phantomos-tools-gcc-x86_64-pc-elf
     - name: Create tools directory
       run: |
         mkdir -p ${{runner.workspace}}/tools/local/{bin,lib,include,share}
