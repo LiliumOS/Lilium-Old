@@ -63,7 +63,7 @@ __idt_ptr:
 .global _start
 .global _hlt
 
-.text
+.section .text.init
 
 .code32
 _start:
@@ -78,6 +78,8 @@ _start:
     lea __pml4t,%edi
     lea __pdpt, %esi
     add $3,%esi
+    mov %esi,(%edi)
+    add %edi,0x800
     mov %esi,(%edi)
     lea __pdpt, %edi
     lea __pdt, %esi

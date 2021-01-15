@@ -97,8 +97,6 @@ message(STATUS "Installing Kernel Libraries to ${PHANTOMSOS_FULL_INSTALL_DYNLIBD
 
 add_executable(phantom src/memcpy.c include/elf.h include/memcpy.h include/memory.h)
 
-target_compile_options(phantom PRIVATE -mno-red-zone -msse -mno-mmx -msse2 -mno-sse3 -mno-ssse3 -mno-sse4)
-
 target_link_options(phantom PRIVATE "-Wl,-Map=${CMAKE_CURRENT_BINARY_DIR}/phantom.map")
 
 target_link_libraries(phantom loader-${PHANTOMOS_TARGET_PROCESSOR} phantom-arch-x86_64 phantom-kernel-ld-scripts)

@@ -1,5 +1,5 @@
 // memcpy.c
-// 
+//
 // This file is part of PhantomOS.
 //
 // PhantomOS is free software: you can redistribute it and/or modify
@@ -16,28 +16,37 @@
 // along with PhantomOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 // PhantomOS is additionally distributed with a system call exemption
-// As an exeption to the above license, 
-//  proprietary software may interface with this software through the use of 
-//  "system calls" to access any of the routines made available by the PhantomOS 
+// As an exeption to the above license,
+//  proprietary software may interface with this software through the use of
+//  "system calls" to access any of the routines made available by the PhantomOS
 //  to programs written to be employed by the user.
-
 
 #include <stddef.h>
 
-void* memcpy(void* restrict dst,const void* restrict src,size_t sz){
-    for(size_t s = 0;s<sz;s++)
-        ((unsigned char*)dst)[s] = ((const unsigned char*)src)[s];
+void *memcpy(void *restrict dst, const void *restrict src, size_t sz)
+{
+    for (size_t s = 0; s < sz; s++)
+        ((unsigned char *)dst)[s] = ((const unsigned char *)src)[s];
     return dst;
 }
 
-void* memmove(void* dst,const void* src,size_t sz){
-    for(size_t s = 0;s<sz;s++)
-        ((unsigned char*)dst)[s] = ((const unsigned char*)src)[s];
+void *memmove(void *dst, const void *src, size_t sz)
+{
+    for (size_t s = 0; s < sz; s++)
+        ((unsigned char *)dst)[s] = ((const unsigned char *)src)[s];
     return dst;
 }
 
-void* memset(void* dst,int b,size_t sz){
-    for(size_t s = 0;s<sz;s++)
-        ((unsigned char*)dst)[s] = (unsigned char)b;
+void *memset(void *dst, int b, size_t sz)
+{
+    for (size_t s = 0; s < sz; s++)
+        ((unsigned char *)dst)[s] = (unsigned char)b;
     return dst;
+}
+
+_Noreturn void _hlt();
+
+_Noreturn void abort()
+{
+    _hlt();
 }

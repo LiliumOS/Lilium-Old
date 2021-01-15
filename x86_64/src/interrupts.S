@@ -23,7 +23,7 @@
 #  to programs written to be employed by the user.
 
 
-.data
+.section ".data.init"
 
 .global __interrupts
 .global __interrupts_end
@@ -55,7 +55,7 @@ __interrupts:
 .quad 0
 __interrupts_end:
 
-.text
+.section ".text.init"
 
 .macro isr name, erc, number
 .global __interrupt_\()\name
