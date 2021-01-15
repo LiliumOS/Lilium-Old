@@ -97,7 +97,7 @@ SECTIONS {
         __bss_end = .;
         . = .;
         __syscall_stack = .;
-        . = .+4096;
+        . = . + 4096;
     }
 
     
