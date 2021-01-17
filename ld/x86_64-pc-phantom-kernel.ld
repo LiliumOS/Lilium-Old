@@ -69,14 +69,16 @@ SECTIONS {
         __pdpt = . + 0x1000;
         __pdt = . + 0x2000;
         __pt  = . + 0x3000;
+        . = . + 0x4000;
     } : paging
 
 
 
-    . = 0xffff800000400000;
+    . = 0xfff0000000400000;
 
     .text ALIGN(1024): AT(0x400000){
         *(.text);
+        . = ALIGN(1024);
     } :higher_half_text
 
     .rodata ALIGN(1024): AT(0x400000+SIZEOF(.text)){
@@ -84,23 +86,18 @@ SECTIONS {
         KEEP(*(.syscall));
         __syscalls_end = .;
         *(.rodata);
-    } 
+    } :higher_half_text
 
-
-    .data ALIGN(1024): AT(0x440000){
+    .data 0xfff0000000440000: AT(0x440000){
         *(.data);
-    } :higher_half_data
-    .bss ALIGN(1024): AT(0x440000+SIZEOF(.data)){
         __bss_start = .;
-        *(.bss)
-        *(COMMON)
+        *(.bss);
+        *(COMMON);
         __bss_end = .;
         . = .;
         __syscall_stack = .;
         . = . + 4096;
-    }
-
-    
+    } :higher_half_data
 
 
 }

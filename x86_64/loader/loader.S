@@ -79,7 +79,7 @@ _start:
     lea __pdpt, %esi
     add $3,%esi
     mov %esi,(%edi)
-    add %edi,0x800
+    add $0x800,%edi
     mov %esi,(%edi)
     lea __pdpt, %edi
     lea __pdt, %esi
