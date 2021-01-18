@@ -1,5 +1,5 @@
 // elf.h
-// 
+//
 // This file is part of the PhantomOS loader.
 //
 // PhantomOS is free software: you can redistribute it and/or modify
@@ -16,16 +16,16 @@
 // along with PhantomOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 // PhantomOS is additionally distributed with a system call exemption
-// As an exeption to the above license, 
-//  proprietary software may interface with this software through the use of 
-//  "system calls" to access any of the routines made available by the PhantomOS 
+// As an exeption to the above license,
+//  proprietary software may interface with this software through the use of
+//  "system calls" to access any of the routines made available by the PhantomOS
 //  to programs written to be employed by the user.
 //
 // The PhantomOS loader is additionally Dual Licensed under the terms of the zlib
-//  and the Apache v2 license, you may, at your option, copy and/or modify this file 
+//  and the Apache v2 license, you may, at your option, copy and/or modify this file
 //  under the terms of those licenses, instead of the terms of the GNU General Public License.
 //  See the PhantomOS Loader License header in the readme file, or the accompanying LICENSE-ZLIB and LICENSE-APACHE files.
-// 
+//
 
 #ifndef LCNIX_ELF_H
 #define LCNIX_ELF_H
@@ -51,7 +51,6 @@ typedef int64_t Elf32_Sxword;
 typedef uint64_t Elf32_Xword;
 typedef int64_t Elf64_Sxword;
 typedef uint64_t Elf64_Xword;
-
 
 #define EI_MAG0 0
 #define EI_MAG1 1
@@ -87,7 +86,8 @@ typedef uint64_t Elf64_Xword;
 #define EI_PAD 9
 #define EI_NIDENT 16
 
-typedef struct Elf32_Ehdr{
+typedef struct Elf32_Ehdr
+{
     Elf_Byte e_ident[EI_NIDENT];
     Elf32_Half e_type;
     Elf32_Half e_machine;
@@ -102,9 +102,10 @@ typedef struct Elf32_Ehdr{
     Elf32_Half e_shentsize;
     Elf32_Half e_shnum;
     Elf32_Section e_shstrndx;
-}Elf32_Ehdr;
+} Elf32_Ehdr;
 
-typedef struct Elf64_Ehdr{
+typedef struct Elf64_Ehdr
+{
     Elf_Byte e_ident[EI_NIDENT];
     Elf64_Half e_type;
     Elf64_Half e_machine;
@@ -119,9 +120,10 @@ typedef struct Elf64_Ehdr{
     Elf64_Half e_shentsize;
     Elf64_Half e_shnum;
     Elf32_Section e_shstrndx;
-}Elf64_Ehdr;
+} Elf64_Ehdr;
 
-typedef struct {
+typedef struct
+{
     Elf32_Word p_type;
     Elf32_Off p_offset;
     Elf32_Addr p_vaddr;
@@ -507,7 +509,8 @@ typedef struct {
 
 #define EM_65816 257 // WDC 65816
 
-typedef struct {
+typedef struct
+{
     Elf64_Word p_type;
     Elf64_Word p_flags;
     Elf64_Off p_offset;
@@ -530,7 +533,8 @@ typedef struct {
 #define PT_LOPROC (0x70000000)
 #define PT_HIPROC (0x7fffffff)
 
-typedef struct {
+typedef struct
+{
     Elf32_Word sh_name;
     Elf32_Word sh_type;
     Elf32_Word sh_flags;
@@ -543,7 +547,8 @@ typedef struct {
     Elf32_Word sh_entsize;
 } Elf32_Shdr;
 
-typedef struct {
+typedef struct
+{
     Elf64_Word sh_name;
     Elf64_Word sh_type;
     Elf64_Word sh_flags;
@@ -556,7 +561,7 @@ typedef struct {
     Elf64_Xword sh_entsize;
 } Elf64_Shdr;
 
-#define SHN_UNDEF	(0x00)
+#define SHN_UNDEF (0x00)
 
 #define SHT_NULL (0)
 #define SHT_PROGBITS (1)
@@ -570,23 +575,25 @@ typedef struct {
 #define SHT_REL (9)
 #define SHT_SHLIB (10)
 #define SHT_DYNSYM (11)
-#define SHT_LOOS   (0x60000000)
-#define SHT_HIOS   (0x6fffffff)
+#define SHT_LOOS (0x60000000)
+#define SHT_HIOS (0x6fffffff)
 #define SHT_LOPROC (0x70000000)
 #define SHT_HIPROC (0x7fffffff)
 #define SHT_LOUSER (0x80000000)
 #define SHT_HIUSER (0xffffffff)
 
-typedef struct{
+typedef struct
+{
     Elf32_Word st_name;
     Elf32_Addr st_value;
     Elf32_Word st_size;
     Elf_Byte st_info;
     Elf_Byte st_other;
     Elf32_Section st_shndx;
-}Elf32_Sym;
+} Elf32_Sym;
 
-typedef struct {
+typedef struct
+{
     Elf64_Word st_name;
     Elf_Byte st_info;
     Elf_Byte st_other;
@@ -603,42 +610,50 @@ typedef struct {
 #define STT_OBJECT (1)
 #define STT_FUNC (2)
 
-# define ELF32_R_SYM(INFO)	((INFO) >> 8)
-# define ELF32_R_TYPE(INFO)	((uint8_t)(INFO))
+#define ELF32_R_SYM(INFO) ((INFO) >> 8)
+#define ELF32_R_TYPE(INFO) ((uint8_t)(INFO))
 
-typedef struct {
+typedef struct
+{
     Elf32_Addr r_offset;
     Elf32_Word r_info;
 } Elf32_Rel;
 
-typedef struct {
+typedef struct
+{
     Elf64_Addr r_offset;
     Elf64_Xword r_info;
 } Elf64_Rel;
 
-typedef struct {
+typedef struct
+{
     Elf32_Addr r_offset;
     Elf32_Word r_info;
     Elf32_Sword r_addend;
 } Elf32_Rela;
 
-typedef struct {
+typedef struct
+{
     Elf64_Addr r_offset;
     Elf64_Xword r_info;
     Elf64_Sxword r_addend;
 } Elf64_Rela;
 
-typedef struct {
+typedef struct
+{
     Elf32_Sword d_tag;
-    union {
+    union
+    {
         Elf32_Word d_val;
         Elf32_Addr d_ptr;
     } d_un;
 } Elf32_Dyn;
 
-typedef struct {
+typedef struct
+{
     Elf64_Sxword d_tag;
-    union {
+    union
+    {
         Elf64_Xword d_val;
         Elf64_Addr d_ptr;
     } d_un;

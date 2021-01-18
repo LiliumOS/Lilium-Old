@@ -69,12 +69,12 @@ SECTIONS {
         __pdpt = . + 0x1000;
         __pdt = . + 0x2000;
         __pt  = . + 0x3000;
-        . = . + 0x4000;
+        . = . + 0x7000;
     } : paging
 
 
 
-    . = 0xfff0000000400000;
+    . = 0xffff800000400000;
 
     .text ALIGN(1024): AT(0x400000){
         *(.text);
@@ -88,7 +88,7 @@ SECTIONS {
         *(.rodata);
     } :higher_half_text
 
-    .data 0xfff0000000440000: AT(0x440000){
+    .data 0xffff800000440000: AT(0x440000){
         *(.data);
         __bss_start = .;
         *(.bss);

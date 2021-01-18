@@ -89,9 +89,18 @@ _start:
     lea __pt, %esi
     add $3,%esi
     mov %esi,(%edi)
+    lea 512(%esi),%esi
+    lea 8(%edi),%edi
+    mov %esi,(%edi)
+    lea 512(%esi),%esi
+    lea 8(%edi),%edi
+    mov %esi,(%edi)
+    lea 512(%esi),%esi
+    lea 8(%edi),%edi
+    mov %esi,(%edi)
     lea __pt,%edi
     mov $0x03,%ebx
-    mov $512,%ecx
+    mov $2048,%ecx
     .SetEntry:
     mov %ebx, (%edi)
     add $0x1000,%ebx
