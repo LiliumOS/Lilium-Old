@@ -1,5 +1,5 @@
 // types.h
-// 
+//
 // This file is part of PhantomOS.
 //
 // PhantomOS is free software: you can redistribute it and/or modify
@@ -16,35 +16,22 @@
 // along with PhantomOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 // PhantomOS is additionally distributed with a system call exemption
-// As an exeption to the above license, 
-//  proprietary software may interface with this software through the use of 
-//  "system calls" to access any of the routines made available by the PhantomOS 
+// As an exeption to the above license,
+//  proprietary software may interface with this software through the use of
+//  "system calls" to access any of the routines made available by the PhantomOS
 //  to programs written to be employed by the user.
 
-#ifndef PHANTOMOS_TYPES_H
-#define PHANTOMOS_TYPES_H
+#ifndef __PHANTOMOS_TYPES_H
+#define __PHANTOMOS_TYPES_H
 
 #include <stdint.h>
 
-typedef struct interrupt_frame{
-    unsigned char fxinfo[512];
-    void* rbp; // Frame Base Address
-    void* cr3; // Page Table Base Address
-    uint64_t r15;
-    uint64_t r14;
-    uint64_t r13;
-    uint64_t r12;
-    uint64_t r11;
-    uint64_t r10;
-    uint64_t r9;
-    uint64_t r8;
-    uint64_t rdi;
-    uint64_t rsi;
-    uint64_t rdx;
-    uint64_t rcx;
-    uint64_t rbx;
-    uint64_t rax;
-}__attribute__((aligned(16))) interrupt_frame;
+typedef long result;
 
+typedef struct duration
+{
+    int64_t seconds;
+    uint32_t nanos;
+} duration;
 
-#endif //PHANTOMOS_TYPES_H
+#endif //__PHANTOMOS_TYPES_H

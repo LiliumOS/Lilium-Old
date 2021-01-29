@@ -1,5 +1,5 @@
 // MachineInfo.h
-// 
+//
 // This file is part of PhantomOS.
 //
 // PhantomOS is free software: you can redistribute it and/or modify
@@ -16,9 +16,9 @@
 // along with PhantomOS.  If not, see <https://www.gnu.org/licenses/>.
 //
 // PhantomOS is additionally distributed with a system call exemption
-// As an exeption to the above license, 
-//  proprietary software may interface with this software through the use of 
-//  "system calls" to access any of the routines made available by the PhantomOS 
+// As an exeption to the above license,
+//  proprietary software may interface with this software through the use of
+//  "system calls" to access any of the routines made available by the PhantomOS
 //  to programs written to be employed by the user.
 
 #ifndef PHANTOMOS_MACHINEINFO_H
@@ -33,23 +33,24 @@
  * @param ... Some cpuid operations have a supplementary code in %ecx.
  * @return A pointer to the output
  */
-uint32_t* cpuid(uint32_t idno,uint32_t* output,... /*uint32_t supplementary*/);
+uint32_t *cpuid(uint32_t idno, uint32_t *output, ... /*uint32_t supplementary*/);
 
 uint64_t rdmsr(uint64_t msr);
-void wrmsr(uint64_t msr,uint64_t value);
+void wrmsr(uint64_t msr, uint64_t value);
 
-enum CR0{
+enum CR0
+{
     PE = 1,
     MP = 2,
     EM = 4,
     TS = 8,
     ET = 16,
     NE = 32,
-    WP = (1<<16),
-    AM = (1<<18),
-    NW = (1<<29),
-    CD = (1<<30),
-    PG = (1<<31)
+    WP = (1 << 16),
+    AM = (1 << 18),
+    NW = (1 << 29),
+    CD = (1 << 30),
+    PG = (1 << 31)
 };
 
 ///
@@ -63,13 +64,14 @@ uint64_t clear_cr0(uint64_t bits);
 /// Gets the value of cr0
 uint64_t get_cr0(void);
 
-void* get_cr2(void);
+void *get_cr2(void);
 
-enum CR4{
+enum CR4
+{
     VME = 1,
     PVI = 2,
     TSD = 4,
-    DE  = 8,
+    DE = 8,
     PSE = 16,
     PAE = 32,
     MCE = 64,
@@ -80,15 +82,36 @@ enum CR4{
     UMIP = 2048,
     VMXE = 8192,
     SMXE = 16384,
-    PCIDE = (1<<17),
-    OSXSAVE = (1<<18),
-    SMEP = (1<<20),
-    SMAP = (1<<21)
+    PCIDE = (1 << 17),
+    OSXSAVE = (1 << 18),
+    SMEP = (1 << 20),
+    SMAP = (1 << 21)
 };
 
 uint64_t set_cr4_bits(uint64_t bits);
 uint64_t clear_cr4(uint64_t bits);
 void write_cr4(uint64_t value);
 uint64_t get_cr4(void);
+
+typedef struct interrupt_frame
+{
+    unsigned char fxinfo[512];
+    void *rbp; // Frame Base Address
+    void *cr3; // Page Table Base Address
+    uint64_t r15;
+    uint64_t r14;
+    uint64_t r13;
+    uint64_t r12;
+    uint64_t r11;
+    uint64_t r10;
+    uint64_t r9;
+    uint64_t r8;
+    uint64_t rdi;
+    uint64_t rsi;
+    uint64_t rdx;
+    uint64_t rcx;
+    uint64_t rbx;
+    uint64_t rax;
+} __attribute__((aligned(16))) interrupt_frame;
 
 #endif //PHANTOMOS_MACHINEINFO_H

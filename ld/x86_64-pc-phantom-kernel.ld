@@ -41,7 +41,7 @@ SECTIONS {
         KEEP(*(.data.gdt));
     } :gdt
 
-    . = 0x20000;
+    . = 0x80000;
     
     .text.init ALIGN(1024):{
         __text_init_start = .;
@@ -69,12 +69,12 @@ SECTIONS {
         __pdpt = . + 0x1000;
         __pdt = . + 0x2000;
         __pt  = . + 0x3000;
-        . = . + 0x7000;
+        . = . + 0x8000;
     } : paging
 
 
-
-    . = 0xffff800000400000;
+    . = 0x0000000000400000;
+    /* . = 0xffff800000400000; */
 
     .text ALIGN(1024): AT(0x400000){
         *(.text);

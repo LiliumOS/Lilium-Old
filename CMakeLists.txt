@@ -99,7 +99,8 @@ add_executable(phantom src/memcpy.c include/elf.h include/memcpy.h include/memor
 
 target_link_options(phantom PRIVATE "-Wl,-Map=${CMAKE_CURRENT_BINARY_DIR}/phantom.map")
 
-target_link_libraries(phantom loader-${PHANTOMOS_TARGET_PROCESSOR} phantom-arch-x86_64 phantom-kernel-ld-scripts)
+target_link_libraries(phantom loader-${PHANTOMOS_TARGET_PROCESSOR} phantom-arch-${PHANTOMOS_TARGET_PROCESSOR} phantom-kernel-ld-scripts)
 
 install(TARGETS phantom-image DESTINATION ${PHANTOMOS_INSTALL_FULL_BOOTDIR})
 
+add_subdirectory(threads)
