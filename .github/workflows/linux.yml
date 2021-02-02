@@ -10,6 +10,9 @@ jobs:
   build_clang:
     runs-on: ubuntu-latest
     steps:
+    - name: Install Build Dependencies
+      run: |
+         sudo apt install ninja-build
     - name: Cache tools
       id: tools
       uses: actions/cache@v2
@@ -21,7 +24,7 @@ jobs:
       run: |
         mkdir -p ${{runner.workspace}}/tools/local/{bin,lib,include,share}
         echo '${{runner.workspace}}/tools/local/bin' > $GITHUB_PATH
-    - name: Install build dependencies
+    - name: Install tool dependencies
       if: steps.tools.outputs.cache-hit != 'true'
       run: |
         sudo apt install bison texinfo
@@ -73,13 +76,14 @@ jobs:
       with:
         source-dir: ${{runner.workspace}}/tools/llvm-project/llvm
         build-dir: ${{runner.workspace}}/tools/llvm-project/build-x86_64-pc-phantom-kernel
-        configure-options: -DCMAKE_INSTALL_PREFIX=${{runner.workspace}}/tools/local -DLLVM_ENABLE_PROJECTS="clang;lld" 
+        configure-options: -GNinja -DCMAKE_INSTALL_PREFIX=${{runner.workspace}}/tools/local -DLLVM_ENABLE_PROJECTS="clang;lld" 
         build-type: Release
         install-build: true
         install-options: --strip
     - name: After build llvm-project
       run: |
-        ln -sfv ld.lld ${{runner.workspace}}/tools/local/bin/x86_64-pc-phantom-kernel-ld.lld
+        ln -sf ld.lld ${{runner.workspace}}/tools/local/bin/x86_64-pc-phantom-kernel-ld.lld
+        ln -sf ${{runner.workspace}}/tools/local/bin/ld.lld ${{runner.workspace}}/tools/local/x86_64-pc-phantom-kernel/bin/ld.lld
     - name: Checkout
       uses: actions/checkout@v2.3.0
       with:
@@ -88,10 +92,10 @@ jobs:
       uses: LightningCreations/action-cmake-build@v1.2
       with:
         # C Compiler for toolchain
-        cc: ${{runner.workspace}}/tools/local/bin/clangclang # optional
+        cc: ${{runner.workspace}}/tools/local/bin/clang # optional
         parallel: 8
         build-dir: ${{runner.workspace}}/build
-        configure-options: -DPHANTOMOS_USE_LINKER=lld
+        configure-options: -DPHANTOMOS_USE_LINKER=lld -GNinja
         
         
 
