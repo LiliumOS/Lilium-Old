@@ -56,7 +56,7 @@ find_program(CMAKE_OBJCOPY NAMES $ENV{OBJCOPY} ${PHANTOM_TARGET_NAME}-objcopy ll
 set(CMAKE_ASM_COMPILER ${CMAKE_C_COMPILER})
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ffreestanding -fno-lto")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -nostdlib -static")
-set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -nodefaultlibs -nostartfiles -flinker-output=dyn")
+set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -nostdlib -flinker-output=dyn")
 
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
