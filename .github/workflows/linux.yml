@@ -78,7 +78,7 @@ jobs:
         install-build: true
         install-options: --strip
     - name: After build llvm-project
-      runs: |
+      run: |
         ln -sfv ld.lld ${{runner.workspace}}/tools/local/build/x86_64-pc-phantom-kernel-ld.lld
     - name: Checkout
       uses: actions/checkout@v2.3.0
