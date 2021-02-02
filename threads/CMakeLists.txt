@@ -3,3 +3,4 @@ add_library(phantomos-threads SHARED src/main.c ${PHANTOMOS_TARGET_PROCESSOR}/sr
     include/ThreadHandle.h)
 
 target_include_directories(phantomos-threads PRIVATE include)
+target_link_libraries(phantomos-threads PRIVATE phantom-module-ld-scripts)

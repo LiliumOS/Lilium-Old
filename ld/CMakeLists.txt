@@ -30,3 +30,14 @@ set_target_properties(phantom-kernel-ld-scripts PROPERTIES
         INTERFACE_LINK_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${PHANTOMOS_TARGET_PROCESSOR}-pc-phantom-kernel.ld)
 
 target_link_options(phantom-kernel-ld-scripts INTERFACE "-Wl,-T${CMAKE_CURRENT_SOURCE_DIR}/${CMAKE_SYSTEM_PROCESSOR}-pc-phantom-kernel.ld")
+
+add_library(phantom-module-ld-scripts INTERFACE)
+add_dependencies(phantom-module-ld-scripts ${CMAKE_CURRENT_SOURCE_DIR}/${PHANTOMOS_TARGET_PROCESSOR}-pc-phantom-kernel-modules.ld)
+
+set_target_properties(phantom-module-ld-scripts PROPERTIES
+        INTERFACE_LINK_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${PHANTOMOS_TARGET_PROCESSOR}-pc-phantom-kernel-modules.ld)
+
+target_link_options(phantom-module-ld-scripts INTERFACE "-Wl,-T${CMAKE_CURRENT_SOURCE_DIR}/${CMAKE_SYSTEM_PROCESSOR}-pc-phantom-kernel-modules.ld")
+
+install(FILES x86_64-pc-phantom-kernel-modules.ld
+        DESTINATION ${PHANTOMSOS_FULL_INSTALL_DYNLIBDIR}/)

@@ -30,25 +30,14 @@ set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/cross/toolchain.cmake CACHE
 project(PhantomOS C ASM)
 
 message(STATUS "Building Phantom for ${PHANTOM_TARGET_NAME}")
-if(NOT DEFINED PHANTOMOS_USE_LLD_INIT_SET)
-    if(WIN32)
-    set(_PHANTOMOS_USE_LLD_INIT ON)
-    else()
-    find_program(DETECT_LLD NAMES ld.lld ${PHANTOM_TARGET_NAME}-ld.lld)
-    if(DETECT_LLD)
-        set(_PHANTOMOS_USE_LLD_INIT ON)
-    else()
-        set(_PHANTOMOS_USE_LLD_INIT OFF)
-    endif()
-    endif()
-    set(PHANTOMOS_USE_LLD_INIT_SET "" CACHE INTERNAL "")
-endif()
-option(PHANTOMOS_USE_LLD "Use lld to link, instead of gnu ld" ${_PHANTOMOS_USE_LLD_INIT})
 
-if(PHANTOMOS_USE_LLD)
-    message(STATUS "Linking with lld")
-    add_link_options(-fuse-ld=lld)
+set(PHANTOMOS_USE_LINKER "" CACHE STRING "The linker to pass to the host compiler")
+
+if(NOT PHANTOMOS_USE_LINKER STREQUAL "")
+    add_link_options("-fuse-ld=${PHANTOMOS_USE_LINKER}")
+    message(STATUS "Building with linker ${PHANTOMOS_USE_LINKER}")
 endif()
+
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED TRUE)
@@ -66,8 +55,6 @@ include(GNUInstallDirs)
 
 set(PHANTOMOS_INSTALL_BOOTDIR boot CACHE PATH "Path to install the kernel and map into")
 
-option(PHANTOMOS_ENABLE_L5PAGING "Enables use of the PML5T on processors that support it" OFF)
-mark_as_advanced(PHANTOMOS_ENABLE_L5PAGING)
 option(PHANTOMOS_ENABLE_UEFI_SUPPORT "Enables support for UEFI Platforms" OFF)
 
 
@@ -100,6 +87,15 @@ add_executable(phantom src/memcpy.c include/elf.h include/memcpy.h include/memor
 target_link_options(phantom PRIVATE "-Wl,-Map=${CMAKE_CURRENT_BINARY_DIR}/phantom.map")
 
 target_link_libraries(phantom loader-${PHANTOMOS_TARGET_PROCESSOR} phantom-arch-${PHANTOMOS_TARGET_PROCESSOR} phantom-kernel-ld-scripts)
+
+add_custom_command(TARGET phantom POST_BUILD
+        COMMAND ${CMAKE_OBJCOPY} --only-keep-debug $<TARGET_FILE:phantom> ${CMAKE_CURRENT_BINARY_DIR}/phantom.debug
+        COMMENT "Extracting kernel debug symbols to phantom.debug")
+
+add_custom_command(TARGET phantom POST_BUILD 
+        COMMAND ${CMAKE_STRIP} $<TARGET_FILE:phantom>
+        COMMENT "Removing kernel debug symbols")
+
 
 install(TARGETS phantom-image DESTINATION ${PHANTOMOS_INSTALL_FULL_BOOTDIR})
 

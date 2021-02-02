@@ -4,6 +4,8 @@ target_link_options(phantom-arch-x86_64-options INTERFACE -mcmodel=large)
 
 add_subdirectory(loader)
 
+option(PHANTOMOS_ENABLE_L5PAGING "Enables use of the PML5T on processors that support it" OFF)
+mark_as_advanced(PHANTOMOS_ENABLE_L5PAGING)
 
 
 add_library(phantom-arch-x86_64 STATIC src/start_kernel.c src/interrupts.S 

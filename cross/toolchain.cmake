@@ -29,7 +29,7 @@ endif()
 
 set(CMAKE_CROSSCOMPILING ON)
 set(PHANTOMOS_TARGET_PROCESSOR ${_PHANTOMOS_HOST_SYSTEM} CACHE STRING "Set the name of the target. Only x86_64 is supported currently")
-set(PHANTOM_TARGET_NAME ${PHANTOMOS_TARGET_PROCESSOR}-pc-elf)
+set(PHANTOM_TARGET_NAME ${PHANTOMOS_TARGET_PROCESSOR}-pc-phantom-kernel)
 
 find_program(CMAKE_C_COMPILER NAMES $ENV{CC} clang ${PHANTOM_TARGET_NAME}-clang ${PHANTOM_TARGET_NAME}-cc ${PHANTOM_TARGET_NAME}-gcc
         REQUIRED)
@@ -48,10 +48,15 @@ find_program(CMAKE_AR NAMES $ENV{AR} ${PHANTOM_TARGET_NAME}-ar llvm-ar ${PHANTOM
 find_program(CMAKE_RANLIB NAMES $ENV{RANLIB} ${PHANTOM_TARGET_NAME}-ranlib llvm-ranlib ${PHANTOM_TARGET_NAME}-llvm-ranlib ranlib
         REQUIRED)
 
+find_program(CMAKE_STRIP NAMES $ENV{STRIP} ${PHANTOM_TARGET_NAME}-strip llvm-strip ${PHANTOM_TARGET_NAME}-llvm-strip strip
+        REQUIRED)
+find_program(CMAKE_OBJCOPY NAMES $ENV{OBJCOPY} ${PHANTOM_TARGET_NAME}-objcopy llvm-objcopy ${PHANTOM_TARGET_NAME}-llvm-objcopy objcopy
+        REQUIRED)
+
 set(CMAKE_ASM_COMPILER ${CMAKE_C_COMPILER})
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ffreestanding")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ffreestanding -fno-lto")
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -nostdlib -static")
-set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -nostdlib -shared")
+set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -nodefaultlibs -nostartfiles -flinker-output=dyn")
 
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
