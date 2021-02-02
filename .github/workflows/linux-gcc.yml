@@ -74,7 +74,7 @@ jobs:
         cc: x86_64-pc-phantom-kernel-gcc # optional
         parallel: 8
         build-dir: ${{runner.workspace}}/build-gcc 
-        configure-options: -DPHANTOMOS_USE_LLD=OFF
+        configure-options: -DPHANTOMOS_USE_LINKER=gold
 
 
       
