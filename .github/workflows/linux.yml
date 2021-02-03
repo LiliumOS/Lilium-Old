@@ -95,7 +95,7 @@ jobs:
         cc: ${{runner.workspace}}/tools/local/bin/clang # optional
         parallel: 8
         build-dir: ${{runner.workspace}}/build
-        configure-options: -DPHANTOMOS_USE_LINKER=lld -GNinja
+        configure-options: -DPHANTOMOS_USE_LINKER=gold -GNinja -DCMAKE_C_FLAGS="-v"
         
         
 
