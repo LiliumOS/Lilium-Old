@@ -82,7 +82,8 @@ jobs:
         install-options: --strip
     - name: After build llvm-project
       run: |
-        ln -sf ld.lld ${{runner.workspace}}/tools/local/bin/x86_64-pc-phantom-kernel-ld.lld
+        ls ${{runner.workspace}}/tools/local/bin/
+        ln -sf ${{runner.workspace}}/tools/local/bin/ld.lld ${{runner.workspace}}/tools/local/bin/x86_64-pc-phantom-kernel-ld.lld
         ln -sf ${{runner.workspace}}/tools/local/bin/ld.lld ${{runner.workspace}}/tools/local/x86_64-pc-phantom-kernel/bin/ld.lld
     - name: Checkout
       uses: actions/checkout@v2.3.0
