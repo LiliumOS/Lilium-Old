@@ -1,27 +1,32 @@
-name: C/C++ CI Linux (gcc)
+name: Linux PhantomOS Tools
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  schedule:
+  - cron: '0 6 * * *'
 
 jobs:
-  build_gcc:
+  build_tools:
     runs-on: ubuntu-latest
     steps:
+    - name: Compute Check Hashes
+      id: hashes
+      run: |
+        gcc_hash=$(git ls-remote https://github.com/PhantomOS/gcc.git | grep HEAD | sed -e 's/\s.*$//')
+        binutils_hash=$(git ls-remote https://github.com/PhantomOS/bintuils.git | grep HEAD | sed -e 's/\s.*$//')
+        llvm_hash=$(git ls-remote https://github.com/PhantomOS/llvm_project.git | grep HEAD | sed -e 's/\s.*$//)
+        echo "::set-output name=hash=$(echo $gcc_hash $binutils_hash $llvm_hash | sha256sum)"
     - name: Cache tools
       id: tools
       uses: actions/cache@v2
       with:
         path: ${{runner.workspace}}/tools/local
-        key: ${{runner.os}}-phantomos-tools-gcc-x86_64-pc-phantom-kernel
+        key: ${{runner.os}}-phantomos-tools-${{steps.hashes.outputs.hash}}
         restore-keys: ${{runner.os}}-phantomos-tools-
     - name: Create tools directory
       run: |
         mkdir -p ${{runner.workspace}}/tools/local/{bin,lib,include,share}
         echo '${{runner.workspace}}/tools/local/bin' > $GITHUB_PATH
-    - name: Install build dependencies
+    - name: Install tool dependencies
       if: steps.tools.outputs.cache-hit != 'true'
       run: |
         sudo apt install bison texinfo
@@ -45,7 +50,6 @@ jobs:
       working-directory: ${{runner.workspace}}/tools
       if: steps.tools.outputs.cache-hit != 'true'
       run: |
-        echo $PATH
         git clone https://github.com/PhantomOS/gcc.git
         curl https://ftp.gnu.org/gnu/gmp/gmp-6.2.1.tar.xz | tar -Jx
         mv -v gmp-6.2.1 gcc/gmp
@@ -63,19 +67,22 @@ jobs:
         make -j8
         make install-strip
       shell: bash
-    - name: Checkout
-      uses: actions/checkout@v2.3.0
-      with:
-        submodules: true 
-    - name: x86_64-pc-phantom-kernel-gcc Build
+    - name: Checkout llvm-project
+      if: steps.tools.outputs.cache-hit != 'true'
+      run: |
+        git clone https://github.com/PhantomOS/llvm-project.git ${{runner.workspace}}/tools/llvm-project
+    - name: Build llvm-project
+      if: steps.tools.outputs.cache-hit != 'true'
       uses: LightningCreations/action-cmake-build@v1.2
       with:
-        # C Compiler for toolchain
-        cc: x86_64-pc-phantom-kernel-gcc # optional
-        parallel: 8
-        build-dir: ${{runner.workspace}}/build-gcc 
-        configure-options: -DPHANTOMOS_USE_LINKER=gold
-
-
-      
-
+        source-dir: ${{runner.workspace}}/tools/llvm-project/llvm
+        build-dir: ${{runner.workspace}}/tools/llvm-project/build-x86_64-pc-phantom-kernel
+        configure-options: -GNinja -DCMAKE_INSTALL_PREFIX=${{runner.workspace}}/tools/local -DLLVM_ENABLE_PROJECTS="clang;lld" 
+        build-type: Release
+        install-build: true
+        install-options: --strip
+    - name: After build llvm-project
+      run: |
+        ls ${{runner.workspace}}/tools/local/bin/
+        ln -sf ${{runner.workspace}}/tools/local/bin/ld.lld ${{runner.workspace}}/tools/local/bin/x86_64-pc-phantom-kernel-ld.lld
+        ln -sf ${{runner.workspace}}/tools/local/bin/ld.lld ${{runner.workspace}}/tools/local/x86_64-pc-phantom-kernel/bin/ld.lld
