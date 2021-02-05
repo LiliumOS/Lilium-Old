@@ -55,7 +55,7 @@ jobs:
     - name: Install tool dependencies
       if: steps.tools.outputs.cache-hit != 'true'
       run: |
-        sudo apt install bison texinfo
+        sudo apt install bison texinfo ninja-build
       shell: bash
     - name: Build x86_64-pc-elf cross binutils
       working-directory: ${{runner.workspace}}/tools/binutils-gdb/build/x86_64-pc-phantom-kernel
