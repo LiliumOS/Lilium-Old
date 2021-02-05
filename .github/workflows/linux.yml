@@ -13,11 +13,17 @@ jobs:
     - name: Install Build Dependencies
       run: |
          sudo apt install ninja-build
+    - name: Get clang cache name
+      id: date
+      run: |
+        echo "::set-output name=date::$(/bin/date -u "+%Y%m%d")"
+      shell: bash
     - name: Cache tools
       id: tools
       uses: actions/cache@v2
       with:
         path: ${{runner.workspace}}/tools/local
+        key: ${{runner.os}}-phantomos-tools-clang-${{steps.date.outputs.date}}
         restore-keys: ${{runner.os}}-phantomos-tools-
     - name: Checkout
       uses: actions/checkout@v2.3.0
