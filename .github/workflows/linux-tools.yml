@@ -9,12 +9,37 @@ jobs:
   build_tools:
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout binutils
+      working-directory: ${{runner.workspace}}/tools
+      run: |
+        echo "$PATH"
+        git clone https://github.com/PhantomOS/binutils-gdb
+        mkdir -pv ${{runner.workspace}}/tools/binutils-gdb/build/x86_64-pc-phantom-kernel
+    - name: Extract gcc 
+      working-directory: ${{runner.workspace}}/tools
+      run: |
+        git clone https://github.com/PhantomOS/gcc.git
+        curl https://ftp.gnu.org/gnu/gmp/gmp-6.2.1.tar.xz | tar -Jx
+        mv -v gmp-6.2.1 gcc/gmp
+        curl https://ftp.gnu.org/gnu/mpfr/mpfr-4.1.0.tar.xz | tar -Jx
+        mv -v mpfr-4.1.0 gcc/mpfr
+        curl https://ftp.gnu.org/gnu/mpc/mpc-1.2.1.tar.gz | tar -zx
+        mv -v mpc-1.2.1 gcc/mpc
+        mkdir -p ${{runner.workspace}}/tools/gcc/build/x86_64-pc-phantom-kernel
+      shell: bash
+        - name: Checkout llvm-project
+      if: steps.tools.outputs.cache-hit != 'true'
+      run: |
+        git clone https://github.com/PhantomOS/llvm-project.git ${{runner.workspace}}/tools/llvm-project
     - name: Compute Check Hashes
       id: hashes
       run: |
-        gcc_hash=$(git ls-remote https://github.com/PhantomOS/gcc.git | grep HEAD | sed -e 's/\s.*$//')
-        binutils_hash=$(git ls-remote https://github.com/PhantomOS/bintuils.git | grep HEAD | sed -e 's/\s.*$//')
-        llvm_hash=$(git ls-remote https://github.com/PhantomOS/llvm_project.git | grep HEAD | sed -e 's/\s.*$//)
+        cd ${{runner.workspace}}/tools/gcc
+        gcc_hash=$(git show-ref --hash HEAD)
+        cd ${{runner.workspace}}/tools/binutils-gdb
+        binutils_hash=$(git show-ref --hash HEAD)
+        cd ${{runner.workspace}}/tools/binutils-gdb
+        llvm_hash=$(git show-ref --hash HEAD)
         echo "::set-output name=hash=$(echo $gcc_hash $binutils_hash $llvm_hash | sha256sum)"
     - name: Cache tools
       id: tools
@@ -31,13 +56,6 @@ jobs:
       if: steps.tools.outputs.cache-hit != 'true'
       run: |
         sudo apt install bison texinfo
-    - name: Extract binutils
-      working-directory: ${{runner.workspace}}/tools
-      if: steps.tools.outputs.cache-hit != 'true'
-      run: |
-        echo "$PATH"
-        git clone https://github.com/PhantomOS/binutils-gdb
-        mkdir -pv ${{runner.workspace}}/tools/binutils-gdb/build/x86_64-pc-phantom-kernel
       shell: bash
     - name: Build x86_64-pc-elf cross binutils
       working-directory: ${{runner.workspace}}/tools/binutils-gdb/build/x86_64-pc-phantom-kernel
@@ -47,19 +65,6 @@ jobs:
         make -j8
         make install-strip
       shell: bash       
-    - name: Extract gcc 
-      working-directory: ${{runner.workspace}}/tools
-      if: steps.tools.outputs.cache-hit != 'true'
-      run: |
-        git clone https://github.com/PhantomOS/gcc.git
-        curl https://ftp.gnu.org/gnu/gmp/gmp-6.2.1.tar.xz | tar -Jx
-        mv -v gmp-6.2.1 gcc/gmp
-        curl https://ftp.gnu.org/gnu/mpfr/mpfr-4.1.0.tar.xz | tar -Jx
-        mv -v mpfr-4.1.0 gcc/mpfr
-        curl https://ftp.gnu.org/gnu/mpc/mpc-1.2.1.tar.gz | tar -zx
-        mv -v mpc-1.2.1 gcc/mpc
-        mkdir -p ${{runner.workspace}}/tools/gcc/build/x86_64-pc-phantom-kernel
-      shell: bash
     - name: Build x86_64-pc-elf gcc
       working-directory: ${{runner.workspace}}/tools/gcc/build/x86_64-pc-phantom-kernel
       if: steps.tools.outputs.cache-hit != 'true'
@@ -68,10 +73,6 @@ jobs:
         make -j8
         make install-strip
       shell: bash
-    - name: Checkout llvm-project
-      if: steps.tools.outputs.cache-hit != 'true'
-      run: |
-        git clone https://github.com/PhantomOS/llvm-project.git ${{runner.workspace}}/tools/llvm-project
     - name: Build llvm-project
       if: steps.tools.outputs.cache-hit != 'true'
       uses: LightningCreations/action-cmake-build@v1.2
