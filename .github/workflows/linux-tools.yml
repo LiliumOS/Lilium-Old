@@ -9,6 +9,10 @@ jobs:
   build_tools:
     runs-on: ubuntu-latest
     steps:
+    - name: Create tools directory
+      run: |
+        mkdir -p ${{runner.workspace}}/tools/local/{bin,lib,include,share}
+        echo '${{runner.workspace}}/tools/local/bin' > $GITHUB_PATH
     - name: Checkout binutils
       working-directory: ${{runner.workspace}}/tools
       run: |
@@ -48,10 +52,6 @@ jobs:
         path: ${{runner.workspace}}/tools/local
         key: ${{runner.os}}-phantomos-tools-${{steps.hashes.outputs.hash}}
         restore-keys: ${{runner.os}}-phantomos-tools-
-    - name: Create tools directory
-      run: |
-        mkdir -p ${{runner.workspace}}/tools/local/{bin,lib,include,share}
-        echo '${{runner.workspace}}/tools/local/bin' > $GITHUB_PATH
     - name: Install tool dependencies
       if: steps.tools.outputs.cache-hit != 'true'
       run: |
