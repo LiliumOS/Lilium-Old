@@ -12,10 +12,10 @@ jobs:
     - name: Checkout binutils
       working-directory: ${{runner.workspace}}/tools
       run: |
-        echo "$PATH"
         git clone https://github.com/PhantomOS/binutils-gdb
         mkdir -pv ${{runner.workspace}}/tools/binutils-gdb/build/x86_64-pc-phantom-kernel
-    - name: Extract gcc 
+      shell: bash
+    - name: Checkout gcc 
       working-directory: ${{runner.workspace}}/tools
       run: |
         git clone https://github.com/PhantomOS/gcc.git
@@ -30,6 +30,7 @@ jobs:
     - name: Checkout llvm-project
       run: |
         git clone https://github.com/PhantomOS/llvm-project.git ${{runner.workspace}}/tools/llvm-project
+      shell: bash
     - name: Compute Check Hashes
       id: hashes
       run: |
