@@ -27,8 +27,7 @@ jobs:
         mv -v mpc-1.2.1 gcc/mpc
         mkdir -p ${{runner.workspace}}/tools/gcc/build/x86_64-pc-phantom-kernel
       shell: bash
-        - name: Checkout llvm-project
-      if: steps.tools.outputs.cache-hit != 'true'
+    - name: Checkout llvm-project
       run: |
         git clone https://github.com/PhantomOS/llvm-project.git ${{runner.workspace}}/tools/llvm-project
     - name: Compute Check Hashes
