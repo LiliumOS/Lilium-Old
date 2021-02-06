@@ -10,63 +10,18 @@ jobs:
   build_gcc:
     runs-on: ubuntu-latest
     steps:
+    - name: Get clang cache name
+      id: date
+      run: |
+        echo "::set-output name=date::$(/bin/date -u "+%Y%m%d")"
+      shell: bash
     - name: Cache tools
       id: tools
       uses: actions/cache@v2
       with:
         path: ${{runner.workspace}}/tools/local
-        key: ${{runner.os}}-phantomos-tools-gcc-x86_64-pc-phantom-kernel
+        key: ${{runner.os}}-phantomos-tools-gcc-${{steps.date.outputs.date}}
         restore-keys: ${{runner.os}}-phantomos-tools-
-    - name: Create tools directory
-      run: |
-        mkdir -p ${{runner.workspace}}/tools/local/{bin,lib,include,share}
-        echo '${{runner.workspace}}/tools/local/bin' > $GITHUB_PATH
-    - name: Install build dependencies
-      if: steps.tools.outputs.cache-hit != 'true'
-      run: |
-        sudo apt install bison texinfo
-    - name: Extract binutils
-      working-directory: ${{runner.workspace}}/tools
-      if: steps.tools.outputs.cache-hit != 'true'
-      run: |
-        echo "$PATH"
-        git clone https://github.com/PhantomOS/binutils-gdb
-        mkdir -pv ${{runner.workspace}}/tools/binutils-gdb/build/x86_64-pc-phantom-kernel
-      shell: bash
-    - name: Build x86_64-pc-elf cross binutils
-      working-directory: ${{runner.workspace}}/tools/binutils-gdb/build/x86_64-pc-phantom-kernel
-      if: steps.tools.outputs.cache-hit != 'true'
-      run: |
-        CFLAGS="-O3" ${{runner.workspace}}/tools/binutils-gdb/configure --prefix=${{runner.workspace}}/tools/local --with-sysroot --enable-gold=default --target=x86_64-pc-phantom-kernel
-        make -j8
-        make install-strip
-      shell: bash       
-    - name: Extract gcc 
-      working-directory: ${{runner.workspace}}/tools
-      if: steps.tools.outputs.cache-hit != 'true'
-      run: |
-        echo $PATH
-        git clone https://github.com/PhantomOS/gcc.git
-        curl https://ftp.gnu.org/gnu/gmp/gmp-6.2.1.tar.xz | tar -Jx
-        mv -v gmp-6.2.1 gcc/gmp
-        curl https://ftp.gnu.org/gnu/mpfr/mpfr-4.1.0.tar.xz | tar -Jx
-        mv -v mpfr-4.1.0 gcc/mpfr
-        curl https://ftp.gnu.org/gnu/mpc/mpc-1.2.1.tar.gz | tar -zx
-        mv -v mpc-1.2.1 gcc/mpc
-        mkdir -p ${{runner.workspace}}/tools/gcc/build/x86_64-pc-phantom-kernel
-      shell: bash
-    - name: Build x86_64-pc-elf gcc
-      working-directory: ${{runner.workspace}}/tools/gcc/build/x86_64-pc-phantom-kernel
-      if: steps.tools.outputs.cache-hit != 'true'
-      run: |
-        CFLAGS="-O3" ${{runner.workspace}}/tools/gcc/configure --prefix=${{runner.workspace}}/tools/local --without-headers --target=x86_64-pc-phantom-kernel --enable-languages=c,c++ --disable-shared --disable-decimal-float --disable-threads --disable-libatomic --disable-libgomp --disable-libquadmath --disable-libssp --disable-libvtv --disable-libstdcxx --enable-newlib
-        make -j8
-        make install-strip
-      shell: bash
-    - name: Checkout
-      uses: actions/checkout@v2.3.0
-      with:
-        submodules: true 
     - name: x86_64-pc-phantom-kernel-gcc Build
       uses: LightningCreations/action-cmake-build@v1.2
       with:
