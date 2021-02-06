@@ -16,13 +16,13 @@ jobs:
     - name: Checkout binutils
       working-directory: ${{runner.workspace}}/tools
       run: |
-        git clone https://github.com/PhantomOS/binutils-gdb
+        git clone --depth 1 https://github.com/PhantomOS/binutils-gdb
         mkdir -pv ${{runner.workspace}}/tools/binutils-gdb/build/x86_64-pc-phantom-kernel
       shell: bash
     - name: Checkout gcc 
       working-directory: ${{runner.workspace}}/tools
       run: |
-        git clone https://github.com/PhantomOS/gcc.git
+        git clone --depth 1 https://github.com/PhantomOS/gcc.git
         curl https://ftp.gnu.org/gnu/gmp/gmp-6.2.1.tar.xz | tar -Jx
         mv -v gmp-6.2.1 gcc/gmp
         curl https://ftp.gnu.org/gnu/mpfr/mpfr-4.1.0.tar.xz | tar -Jx
@@ -33,7 +33,7 @@ jobs:
       shell: bash
     - name: Checkout llvm-project
       run: |
-        git clone https://github.com/PhantomOS/llvm-project.git ${{runner.workspace}}/tools/llvm-project
+        git clone --depth 1 https://github.com/PhantomOS/llvm-project.git ${{runner.workspace}}/tools/llvm-project
       shell: bash
     - name: Compute Check Hashes
       id: hashes
