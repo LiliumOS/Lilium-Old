@@ -44,7 +44,7 @@ jobs:
         binutils_hash=$(git show-ref --hash HEAD)
         cd ${{runner.workspace}}/tools/binutils-gdb
         llvm_hash=$(git show-ref --hash HEAD)
-        echo "::set-output name=hash=$(echo $gcc_hash $binutils_hash $llvm_hash | sha256sum)"
+        echo "::set-output name=hash::$(echo $gcc_hash $binutils_hash $llvm_hash | sha256sum)"
     - name: Cache tools
       id: tools
       uses: actions/cache@v2
