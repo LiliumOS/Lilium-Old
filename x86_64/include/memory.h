@@ -27,34 +27,40 @@
 #include <stdint.h>
 #include <stddef.h>
 
-
-typedef struct PML5T{
-    _Alignas(4096) int64_t pml4t[512];
-} PML5T;
-
-typedef struct PML4T{
-    _Alignas(4096) int64_t pdpt[512];
-} PML4T;
-
-typedef struct PDPT{
-    _Alignas(4096) int64_t pdt[512];
-} PDPT;
-
-typedef struct PDT{
-    _Alignas(4096) int64_t pt[512];
-} PPT;
+#define __kernel
+#define __user
+#define __mixed
+#define __physical
 
 typedef struct PT{
-    _Alignas(4096) int64_t pe[512];
+    _Alignas(4096) void* __physical pe[512];
 } PT;
 
-void* get_mapped_virtual_address(int64_t paddr);
+typedef struct PDT{
+    _Alignas(4096) PT* __physical pt[512];
+} PDT;
 
-int64_t get_mapped_physical_addr(void* vaddr);
+typedef struct PDPT{
+    _Alignas(4096) PDT* __physical pdt[512];
+} PDPT;
 
-int64_t read_cr3();
+typedef struct PML4T{
+    _Alignas(4096) PDPT* __physical pdpt[512];
+} PML4T;
+
+typedef struct PML5T{
+    _Alignas(4096) PML4T* __physical pml4t[512];
+} PML5T;
 
 
-void* kmap(int64_t paddr,void* vaddr_hint,size_t pcount);
+void* get_mapped_virtual_address(void* __physical paddr);
+
+void* __physical get_mapped_physical_addr(void* vaddr);
+
+void* __physical read_cr3();
+
+void* kmap(void* __physical paddr,void* vaddr_hint,size_t pcount);
+
+int64_t get_linear_address_mask();
 
 #endif //PHANTOMOS_MEMORY_H

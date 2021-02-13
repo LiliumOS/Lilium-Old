@@ -12,7 +12,9 @@ SECTIONS{
     } :text
     .rodata : {
         *(.rodata);
+        __syscall_begin = 0;
         *(.syscall);
+        __syscall_end = 0;
     }
 
     . = . + ALIGN(0x1000);

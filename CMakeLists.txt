@@ -44,12 +44,7 @@ set(CMAKE_C_STANDARD_REQUIRED TRUE)
 
 include_directories(include ${PHANTOMOS_TARGET_PROCESSOR}/include)
 
-add_compile_options(-Wno-multichar -Wno-int-to-pointer-cast -nostdinc)
-
-add_subdirectory(filesystems)
-
-add_subdirectory(ld)
-add_subdirectory(${PHANTOMOS_TARGET_PROCESSOR})
+add_compile_options(-Wno-multichar -Wno-int-to-pointer-cast)
 
 include(GNUInstallDirs)
 
@@ -66,37 +61,63 @@ else()
     set(PHANTOMOS_FULL_INSTALL_BOOTDIR "${CMAKE_INSTALL_PREFIX}/${PHANTOMOS_INSTALL_BOOTDIR}")
 endif()
 
-message(STATUS "Installing Kernel to ${PHANTOMOS_FULL_INSTALL_BOOTDIR}")
+message(STATUS "Booting from ${PHANTOMOS_FULL_INSTALL_BOOTDIR}")
 
+set(PHANTMOS_INSTALL_KERNELDIR "" CACHE PATH "The path (within the bootdir) to install the kernel")
+
+if(IS_ABSOLUTE ${PHANTOMOS_INSTALL_KERNELDIR})
+    set(PHANTOMOS_FULL_INSTALL_KERNELDIR ${PHANTOMOS_INSTALL_KERNELDIR})
+else()
+    set(PHANTOMOS_FULL_INSTALL_KERNELDIR ${PHANTOMOS_FULL_INSTALL_BOOTDIR}/${PHANTOMOS_INSTALL_KERNELDIR})
+endif()
+
+message(STATUS "Installing kernel to ${PHANTOMOS_FULL_INSTALL_KERNELDIR}")
 
 set(PHANTOMOS_KERNEL_DYNLIBPATH /system/lib CACHE PATH "Path within the Search prefix to search for kernel libraries")
 set(PHANTOMOS_KERNEL_SEARCH_PREFIX /boot;/ CACHE PATH "Paths to Search for the kernel and modules") 
 set(PHANTOMOS_INSTALL_DYNLIBDIR system/lib CACHE PATH "Path to install kernel libraries into (relative to PHANTOMOS_INSTALL_BOOTDIR)")
+set(PHANTOMOS_KERNEL_SEARCH_DIRS /;/system CACHE PATH "Paths under the prefix to search for the kernel")
+
+set(PHANTOMOS_KERNEL_NAME phantom-kernel CACHE STRING "The Name (stem) of the kernel that the loader will open")
+set(PHANTOMOS_KERNEL_PREFIX "" CACHE STRING "The prefix for the PhantomOS kernel (with the name appended)")
+set(PHANTOMOS_KERNEL_SUFFIX ".so" CACHE STRING "The suffix for the PhantomOS kernel (with the name prepended)")
+mark_as_advanced(PHANTOMOS_KERNEL_PREFIX PHANTOMOS_KERNEL_SUFFIX)
+
 if(IS_ABSOLUTE ${PHANTOMOS_INSTALL_DYNLIBDIR})
-    set(PHANTOMSOS_FULL_INSTALL_DYNLIBDIR ${PHANTOMOS_INSTALL_DYNLIBDIR})
+    set(PHANTOMOS_FULL_INSTALL_DYNLIBDIR ${PHANTOMOS_INSTALL_DYNLIBDIR})
 else()
-    set(PHANTOMSOS_FULL_INSTALL_DYNLIBDIR ${PHANTOMOS_FULL_INSTALL_BOOTDIR}/${PHANTOMOS_INSTALL_DYNLIBDIR})
+    set(PHANTOMOS_FULL_INSTALL_DYNLIBDIR ${PHANTOMOS_FULL_INSTALL_BOOTDIR}/${PHANTOMOS_INSTALL_DYNLIBDIR})
 endif()
 
 
-message(STATUS "Installing Kernel Libraries to ${PHANTOMSOS_FULL_INSTALL_DYNLIBDIR}")
+message(STATUS "Installing Kernel Libraries to ${PHANTOMOS_FULL_INSTALL_DYNLIBDIR}")
 
 
-add_executable(phantom src/memcpy.c include/elf.h include/memcpy.h include/memory.h)
+add_subdirectory(filesystems)
+
+add_subdirectory(ld)
+add_subdirectory(${PHANTOMOS_TARGET_PROCESSOR})
+
+add_executable(phantom src/memcpy.c include/elf.h include/memcpy.h)
 
 target_link_options(phantom PRIVATE "-Wl,-Map=${CMAKE_CURRENT_BINARY_DIR}/phantom.map")
 
 target_link_libraries(phantom loader-${PHANTOMOS_TARGET_PROCESSOR} phantom-arch-${PHANTOMOS_TARGET_PROCESSOR} phantom-kernel-ld-scripts)
 
 add_custom_command(TARGET phantom POST_BUILD
-        COMMAND ${CMAKE_OBJCOPY} --only-keep-debug $<TARGET_FILE:phantom> ${CMAKE_CURRENT_BINARY_DIR}/phantom.debug
+        COMMAND ${CMAKE_COMMAND} -E echo Extracting kernel debug symbols to $<TARGET_FILE:phantom>.debug
+        COMMAND ${CMAKE_OBJCOPY} --only-keep-debug $<TARGET_FILE:phantom> $<TARGET_FILE:phantom>.debug
         COMMENT "Extracting kernel debug symbols to phantom.debug")
 
 add_custom_command(TARGET phantom POST_BUILD 
+        COMMAND ${CMAKE_COMMAND} -E echo Removing kernel debug symbols
         COMMAND ${CMAKE_STRIP} $<TARGET_FILE:phantom>
         COMMENT "Removing kernel debug symbols")
 
 
-install(TARGETS phantom-image DESTINATION ${PHANTOMOS_INSTALL_FULL_BOOTDIR})
+install(TARGETS phantom-image DESTINATION ${PHANTOMOS_FULL_INSTALL_BOOTDIR})
+
+install(FILES include/elf.h include/usthreads.h TYPE INCLUDE)
 
 add_subdirectory(threads)
+add_subdirectory(kernel)

@@ -30,6 +30,16 @@ typedef uint16_t uint_fast16_t;
 typedef uint32_t uint_fast32_t;
 typedef uint64_t uint_fast64_t;
 
+typedef int8_t  int_least8_t;
+typedef int16_t int_least16_t;
+typedef int32_t int_least32_t;
+typedef int64_t int_least64_t;
+
+typedef int8_t  int_fast8_t;
+typedef int16_t int_fast16_t;
+typedef int32_t int_fast32_t;
+typedef int64_t int_fast64_t;
+
 #define INT8_C(v) ((int8_t)v)
 #define INT16_C(v) ((int16_t)v)
 #define INT32_C(v) ((int32_t)v)
@@ -96,5 +106,11 @@ typedef uint64_t uint_fast64_t;
 #define  INT_FAST64_MAX  INT8_MAX
 #define UINT_FAST64_MAX UINT8_MAX
 
+#define INTPTR_MIN __INTPTR_MIN__
+#define INTPTR_MAX __INTPTR_MAX__
+#define UINTPTR_MAX __UINTPTR_MAX__
+
+typedef __INTPTR_TYPE__ intptr_t;
+typedef __UINTPTR_TYPE__ uintptr_t;
 
 #endif

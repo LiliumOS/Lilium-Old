@@ -4,3 +4,5 @@ add_library(phantomos-threads SHARED src/main.c ${PHANTOMOS_TARGET_PROCESSOR}/sr
 
 target_include_directories(phantomos-threads PRIVATE include)
 target_link_libraries(phantomos-threads PRIVATE phantom-module-ld-scripts)
+
+install(TARGETS phantomos-threads DESTINATION ${PHANTOMOS_FULL_INSTALL_DYNLIBDIR})

@@ -40,4 +40,4 @@ set_target_properties(phantom-module-ld-scripts PROPERTIES
 target_link_options(phantom-module-ld-scripts INTERFACE "-Wl,-T${CMAKE_CURRENT_SOURCE_DIR}/${CMAKE_SYSTEM_PROCESSOR}-pc-phantom-kernel-modules.ld")
 
 install(FILES x86_64-pc-phantom-kernel-modules.ld
-        DESTINATION ${PHANTOMSOS_FULL_INSTALL_DYNLIBDIR}/)
+        DESTINATION ${PHANTOMOS_FULL_INSTALL_DYNLIBDIR})

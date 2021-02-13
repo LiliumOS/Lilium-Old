@@ -11,6 +11,6 @@ mark_as_advanced(PHANTOMOS_ENABLE_L5PAGING)
 add_library(phantom-arch-x86_64 STATIC src/start_kernel.c src/interrupts.S 
             include/MachineInfo.h src/machine_info.S include/types.h
             include/bus.h src/bus.S src/acpi.S include/acpi.h
-            src/printk.c)
+            src/printk.c  include/memory.h)
 
 target_link_libraries(phantom-arch-x86_64 PUBLIC phantom-arch-x86_64-options)

@@ -6,7 +6,7 @@
 typedef struct __ThreadHandle __ThreadHandle;
 
 // ThreadHandle *GetCurrentThread(void);
-// Gets a handle to the current thread. Always succeeds.
+// Gets a handle to the current thread. Returns NULL if the reference counter of the current thread exceeds 2^63-2 (which should never happen)
 #define __NR_GetCurrentThread (256)
 
 // _Noreturn void ThreadExit(int)
