@@ -26,7 +26,7 @@ static bool can_map_page(uint64_t vaddr) {
 
 static bool can_map_pages(uint64_t vaddr, size_t pcount) {
     for(size_t i = 0; i < pcount; i++) {
-        if(!can_map_page(vaddr)) return 0;
+        if(!can_map_page(vaddr+i*0x1000)) return 0;
     }
     return 1;
 }
@@ -47,7 +47,7 @@ static void map_page(void *__physical paddr, uint64_t vaddr) {
 }
 
 static void kmap_real(void *__physical paddr, uint64_t vaddr, size_t pcount) {
-    for(size_t i = 0; i < pcount; i++) map_page(paddr, vaddr);
+    for(size_t i = 0; i < pcount; i++) map_page(paddr+i*0x1000, vaddr+i*0x1000);
 }
 
 // \brief Map memory, intended for use in the kernel
