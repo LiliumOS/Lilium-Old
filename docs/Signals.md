@@ -94,7 +94,7 @@ The following signals are defined by PhantomOS, with the given signal ID, and gi
 
 *: Signal is unblockable, and then default behaviour cannot be changed.
 
-**: SIGTRAP is intercepted by the active Debugger for the thread, if any. If a debugger intercepts the signal, it is not delivered to the thread. 
+**: SIGTRAP is intercepted by the active Debugger for the thread, if any. If a debugger intercepts the signal, it is not delivered to the thread, but the thread is instead SUSPENDED. 
 
 SIGWINCH is not specified by POSIX.
 
@@ -113,17 +113,19 @@ This macro is defined to a value of type `long` that is not negative, and may be
 
 This macro is defined to a value of type `long` that is not negative, and may be passed to `SetSignalFlags` (potentially `|` `SIG_FLG_ACTION`) or `ClearSignalFlags`, to set or clear the signal interrupt flag.
 
-### SignalThread
+### SignalThread / SignalProcess
 
 `result SignalThread(ThreadHandle* hdl,int sig);`
+`result SignalProcess(ProcessHandle* hdl,int sig);`
 
-Sends an asynchronous signal to the thread designated by `hdl`, or the calling thread if `hdl` is `NULL`. 
+For `SignalThread`, sends an asynchronous signal to the thread designated by `hdl`, or the calling thread if `hdl` is `NULL`. 
 (If the signal is sent to the current thread, it is recived as a synchronous signal instead, unless executed from the handler of the same signal).
+For `SignalProcess`, sends an asynchronous signal to the signal handling thread of the process designated by `hdl`, or the current process if `hdl` is `NULL`. 
 
 This system call is *memory coherent*. An Atomic access `A` on a thread of execution that calls `SignalThread` that is *sequenced-before* the call *strongly happens-before* that call. 
 
-Returns INVALID_HANDLE if `th` is neither NULL nor a valid thread handle. Returns INVALID_ARGUMENT if `sig` is not a signal number defined above, or a real-time signal.
-Returns PERMISSION if the current thread does not have `SendSignal` permission to `th`. 
+Returns INVALID_HANDLE if `hdl` is neither NULL nor a valid thread handle (or process handle). Returns INVALID_ARGUMENT if `sig` is not a signal number defined above, or a real-time signal.
+Returns PERMISSION if the current thread does not have `SendSignal` permission to `hdl`. 
 
 ### signal
 
@@ -133,4 +135,39 @@ Registers the given `handler` to handle `sig` on the calling thread. Returns the
 
 If `handler` is not mapped when this function is called, and is neither SIG_DFL nor SIG_IGN, returns SIG_ERR. 
 If `handler` is mapped when the function is called, but is unmapped from the calling thread's address space, the calling thread recieves SIGSEGV. If the SIGSEGV handler is unmapped at this time, the calling thread recieves SIGKILL.
+
+If `sig` is not a valid signal number, or is `SIGKILL`, `SIGSTOP`, or `SIGCONT`, returns SIG_ERR.
+
+### SetSignalFlags
+
+`result SetSignalFlags(long flags);`
+
+flags shall be some combination of `SIG_FLG_ACTION`, and `SIG_FLG_INTERRUPT` (combined with or).
+
+If `SIG_FLG_ACTION` is set in `flags`, then the signal action flag is set. If `SIG_FLG_INTERRUPT` is set in `flags`, then the signal interrupt flag is set. 
+
+The total operation shall behave as though an atomic read-modify-write with memory_order_relaxed. 
+
+Returns INVALID_ARGUMENT if flags is neither `SIG_FLG_ACTION`, nor `SIG_FLG_INTERRUPT`, nor `SIG_FLG_ACTION|SIG_FLG_INTERRUPT`. Returns PERMISSION if `SIG_FLG_ACTION` is specified, and the calling thread does not have SendSignal permission to the current process. If an error is returned, then no flags were modified by the call.
+
+### ClearSignalFlags
+
+`result ClearSignalFlags(long flags);`
+
+flags shall be some combination of `SIG_FLG_ACTION`, and `SIG_FLG_INTERRUPT` (combined with or).
+
+If `SIG_FLG_ACTION` is set in `flags`, then the signal action flag is cleared. If `SIG_FLG_INTERRUPT` is set in `flags`, then the signal interrupt flag is cleared. 
+
+The total operation shall behave as though an atomic read-modify-write with memory_order_relaxed. 
+
+Returns INVALID_ARGUMENT if flags is neither `SIG_FLG_ACTION`, nor `SIG_FLG_INTERRUPT`, nor `SIG_FLG_ACTION|SIG_FLG_INTERRUPT`. If an error is returned, then no flags were modified by the call.
+
+### SetHandlingThread
+
+`result SetHandlingThread(ThreadHandle* hdl);`
+
+Sets the signal handling thread of the current process to `hdl`, or the current thread if `hdl` is NULL. 
+
+Returns INVALID_HANDLE if `hdl` is neither NULL nor a valid ThreadHandle. Returns INVALID_ARGUMENT if `hdl` is a handle to a thread that is not owned by the current process. If `hdl` is not NULL, returns PERMISSION if the calling thread does not have `SendSignal` permission to `hdl`. Returns PERMISSION if the calling thread does not have `SignalControl` permission to the current process.
+
 
