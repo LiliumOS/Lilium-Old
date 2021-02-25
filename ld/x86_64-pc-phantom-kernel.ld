@@ -60,8 +60,6 @@ SECTIONS {
         KEEP(*(.data.init));
         __data_init_end = .;
     } :data
-    
-    __vram_start = 0xb8000;
     .data.pt ALIGN(4096):{
         . = .;
         __pt_start = .;
@@ -69,26 +67,26 @@ SECTIONS {
         __pdpt = . + 0x1000;
         __pdt = . + 0x2000;
         __pt  = . + 0x3000;
-        . = . + 0x8000;
     } : paging
 
+    __vram_start = 0xb8000;
+    . = 0x0000000000040000;
+    /* . = 0xffff800000040000; */
 
-    . = 0x0000000000400000;
-    /* . = 0xffff800000400000; */
-
-    .text ALIGN(1024): AT(0x400000){
+    .text ALIGN(1024): AT(0x40000){
         *(.text);
         . = ALIGN(1024);
     } :higher_half_text
 
-    .rodata ALIGN(1024): AT(0x400000+SIZEOF(.text)){
+    .rodata ALIGN(1024): AT(0x40000+SIZEOF(.text)){
         __syscalls = .;
         KEEP(*(.syscall));
         __syscalls_end = .;
         *(.rodata);
     } :higher_half_text
-
-    .data 0xffff800000440000: AT(0x440000){
+    . = 0x0000000000440000;
+    /* . = 0xffff800000440000; */
+    .data ALIGN(1024): AT(0x440000){
         *(.data);
         __bss_start = .;
         *(.bss);

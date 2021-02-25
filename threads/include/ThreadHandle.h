@@ -13,13 +13,11 @@ enum ThreadStatus{
     Blocked = 2,
     Suspended = 3,
     Stopped = 4,
-    Finished = 5,
-    Dead = 6,
-    Zombie = 7
+    Dead = 5,
 };
 
 struct __ThreadHandle{
-    atomic_uint_least64_t ref_count;        
+    atomic_ulong ref_count;        
     _Atomic(enum ThreadStatus)  status;
     atomic_flag inv_token;
     atomic_flag inv_interrupted;
@@ -27,6 +25,9 @@ struct __ThreadHandle{
     uint32_t priority;
     _Atomic(void* __user) waiting_address;
     struct __ProcessHandle* proc;
+    _Atomic(int) pending_signal;
+    _Atomic(void(*)(int)) signal_disposition[64];
+    atomic_uint_fast8_t signal_opts;
 };
 
 extern struct __ThreadHandle* __mixed self; 

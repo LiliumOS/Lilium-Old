@@ -1,13 +1,14 @@
 
 #include <ThreadHandle.h>
 #include <errors.h>
+#include <limits.h>
 
 #define SYSCALL(v) ((void(*)(void))(v))
 
 
 
 __ThreadHandle* sys_GetCurrentThread(void){
-    if(atomic_fetch_add_explicit(&self->ref_count,1,memory_order_relaxed)==UINT_LEAST64_MAX){
+    if(atomic_fetch_add_explicit(&self->ref_count,1,memory_order_relaxed)==ULONG_MAX){
         // FIXME: I'm pretty sure this is a race condition, but idk how to make it not be one, without a CAS Loop
         atomic_fetch_sub_explicit(&self->ref_count,1,memory_order_relaxed);
         return NULL;
