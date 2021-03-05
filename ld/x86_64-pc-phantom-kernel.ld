@@ -83,8 +83,11 @@ SECTIONS {
         __pdpt = . + 0x1000;
         __pdt = . + 0x2000;
         __pt  = . + 0x3000;
+        __pt_end = . + 0x10000;
     } :paging
+    
+    . = __pt_end;
 
     __vram_start = 0xb8000;
-
+    __heap = 0xc0000;
 }
