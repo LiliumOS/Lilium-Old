@@ -93,7 +93,7 @@ __interrupt_\()\name:
     .if \erc
     mov 8(%rbp),%edx
     .endif
-    call handle_interrupt
+    call handle_interrupt(%rip)
     mov %rsp,%rax
     fxrstor (%rsp)
     add $512,%rsp
