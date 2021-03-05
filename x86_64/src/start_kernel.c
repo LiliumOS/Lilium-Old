@@ -30,22 +30,17 @@
 _Noreturn void _hlt(void);
 
 void printk(const char* v);
+void putc(char c);
 
 void clear(void);
 
 _Noreturn __attribute__((section(".text.init"))) void start_kernel(void* multiboot){
     (void)multiboot;
     clear();
-    printk("Hello World\n");
-    uint32_t buf[5] = {0};
+    uint32_t buf[5] = {0,0,0,0,'\n'};
     cpuid(0,buf);
-    char ticker[2] = {'0',0};
-    for(int i = 0; i < 24; i++) {
-        printk((const char*)&buf[1]);
-        printk(ticker);
-        ticker[0]++;
-        printk("\n");
-    }
+    printk((const char*)(buf+1));
+    printk("Hello World\n");
 
     RDSP* rdsp = find_rdsp();
     RDSP_v2* rdspv2 = NULL;

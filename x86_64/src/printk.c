@@ -21,10 +21,10 @@
 //  "system calls" to access any of the routines made available by the PhantomOS 
 //  to programs written to be employed by the user.
 
-#include <signal.h>
-
 #include <screen.h>
 #include <stdarg.h>
+#include <stdatomic.h>
+#include <stdint.h>
 
 struct vram_entry{
     char asciz;
@@ -39,20 +39,20 @@ struct vram_entry{
 
 extern volatile struct vram_entry __vram_start[VRAM_MAX_Y][VRAM_MAX_X];
 
-static volatile sig_atomic_t x,y;
+static unsigned int x,y;
 
-static volatile sig_atomic_t screenColor = PRINTK_COLOR;
+static uint8_t screenColor = PRINTK_COLOR;
 
 
 void clear(void){
     screenColor = PRINTK_COLOR;
+    x = 0;
+    y = 0;
     for(unsigned short y = 0;y<VRAM_MAX_Y;y++)
         for(unsigned short x = 0;x<VRAM_MAX_X;x++) {
             __vram_start[y][x].asciz = 0;
             __vram_start[y][x].cl = 0;
         }
-    x = 0;
-    y = 0;
 }
 
 void putc(char c){
@@ -129,22 +129,6 @@ void printk(const char* c){
                     do{
                         x++;
                     }while(x%TAB_STOP!=0);
-                break;
-                case '\x1b':
-                    c++;
-                    if(*c=='c'){
-                        screenColor = PRINTK_COLOR;
-                        for(unsigned short y = 0;y<VRAM_MAX_Y;y++)
-                            for(unsigned short x = 0;x<VRAM_MAX_X;x++) {
-                                __vram_start[y][x].asciz = 0;
-                                __vram_start[y][x].cl = 0;
-                            }
-                        x = 0;
-                        y = 0;
-                    }
-                    else if(*c=='['){
-                        //TODO
-                    }
                 break;
             }
         }else{

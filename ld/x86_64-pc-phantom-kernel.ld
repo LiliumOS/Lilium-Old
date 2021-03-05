@@ -57,6 +57,7 @@ SECTIONS {
         __rodata_start = .;
         *(.rodata);
         __rodata_end = .;
+        *(.rodata.str*);
     } :text
     
     .data.init ALIGN(4096):{
