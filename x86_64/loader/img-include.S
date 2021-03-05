@@ -31,4 +31,4 @@
 
 .section .data.img, "w"
 __head:
-.incbin "$<TARGET_FILE:phantom>"
+.incbin PHANTOM_KERNEL_BINARY
