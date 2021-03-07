@@ -8,7 +8,7 @@ option(PHANTOMOS_ENABLE_L5PAGING "Enables use of the PML5T on processors that su
 mark_as_advanced(PHANTOMOS_ENABLE_L5PAGING)
 
 
-add_library(phantom-arch-x86_64 STATIC src/start_kernel.c src/interrupts.S src/kmap.c
+add_library(phantom-arch-x86_64 STATIC src/start_kernel.c src/interrupts.S src/kmap.c src/kalloc.c
             include/MachineInfo.h src/machine_info.S include/types.h
             include/bus.h src/bus.S src/acpi.S include/acpi.h
             src/printk.c  include/memory.h)

@@ -63,4 +63,13 @@ void* kmap(void* __physical paddr,void* vaddr_hint,size_t pcount);
 
 int64_t get_linear_address_mask();
 
+enum MemoryPool {
+    ATOMIC,
+    USER,
+    KERNEL,
+    MIXED
+};
+
+void* kalloc(size_t size, size_t alignment, enum MemoryPool pool);
+
 #endif //PHANTOMOS_MEMORY_H
