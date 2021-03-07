@@ -100,9 +100,9 @@ add_subdirectory(${PHANTOMOS_TARGET_PROCESSOR})
 
 add_executable(phantom src/memcpy.c include/elf.h include/memcpy.h)
 
-target_compile_options(phantom PRIVATE -fPIE)
+target_compile_options(phantom PRIVATE -fPIE -static-pie)
 
-target_link_options(phantom PRIVATE "-Wl,-Map=${CMAKE_CURRENT_BINARY_DIR}/phantom.map")
+target_link_options(phantom PRIVATE "-Wl,-Map=${CMAKE_CURRENT_BINARY_DIR}/phantom.map" -static-pie)
 
 target_link_libraries(phantom loader-${PHANTOMOS_TARGET_PROCESSOR} phantom-arch-${PHANTOMOS_TARGET_PROCESSOR} phantom-kernel-ld-scripts)
 

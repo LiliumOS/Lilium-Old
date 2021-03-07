@@ -119,7 +119,7 @@ _start:
     or $0x80000002,%eax
     and $~4,%eax
     mov %eax,%cr0
-    call *__init_idt
+    call __init_idt
     lgdt __gdt_ptr
     lidt __idt_ptr
     mov %cr4,%eax
