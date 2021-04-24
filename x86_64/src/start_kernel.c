@@ -26,6 +26,7 @@
 #include <stdint.h>
 #include <MachineInfo.h>
 #include <stddef.h>
+#include <memory.h>
 
 _Noreturn void _hlt(void);
 
@@ -44,26 +45,42 @@ _Noreturn __attribute__((section(".text.init"))) void start_kernel(void* multibo
 
     RDSP* rdsp = find_rdsp();
     RDSP_v2* rdspv2 = NULL;
-    APICDSTHeader* rsdt_or_xsdt;
     if(rdsp) {
+        printk("RSDP Found\n");
         unsigned char chksm = 0;
         for(unsigned char* sum_ptr = (unsigned char*)rdsp;sum_ptr!=(unsigned char*)(rdsp+1);sum_ptr++)
             chksm += *sum_ptr;
         if(chksm){
-            printk("RDSP Checksum failure");
+            printk("RDSP Checksum failure\n");
             _hlt();
         }
         if(rdsp->revision>=2){
+            printk("Found XSDT\n");
             rdspv2 = (RDSP_v2*)rdsp;
             for(unsigned char* sum_ptr = (unsigned char*)rdspv2;sum_ptr!=(unsigned char*)(rdspv2+1);sum_ptr++)
                 chksm += *sum_ptr;
             if(chksm){
-                printk("RDSPv2 Checksum failure");
+                printk("RDSPv2 Checksum failure\n");
                 _hlt();
             }
-            rsdt_or_xsdt = (APICDSTHeader *) rdspv2->xdst_addr;
+            XSDT *xsdt = (XSDT *)kmap(rdspv2->xdst_addr,0,1);
+            long size = (xsdt->header.size - sizeof(xsdt->header))/8;
+            for(unsigned char* sum_ptr = (unsigned char*)xsdt;sum_ptr!=((unsigned char*)xsdt)+xsdt->header.size;sum_ptr++)
+                chksm += *sum_ptr;
+            if(chksm){
+                printk("XSDT Checksum failure\n");
+                _hlt();
+            }
         }else{
-            rsdt_or_xsdt = (APICDSTHeader *)(unsigned long long)rdsp->rdst_addr;
+            printk("Legacy RSDT only\n");
+            RSDT *rsdt = (RSDT *)kmap((void*)rdsp->rdst_addr,0,1);
+            long size = (rsdt->header.size - sizeof(rsdt->header))/4;
+            for(unsigned char* sum_ptr = (unsigned char*)rsdt;sum_ptr!=((unsigned char*)rsdt)+rsdt->header.size;sum_ptr++)
+                chksm += *sum_ptr;
+            if(chksm){
+                printk("RSDT Checksum failure\n");
+                _hlt();
+            }
         }
 
     }
