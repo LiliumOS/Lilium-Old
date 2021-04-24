@@ -50,6 +50,21 @@ static void map_page(void *__physical paddr, uint64_t vaddr) {
     pde->pe[(vaddr >> 12) & 0x1ff] = (void*) (u(paddr) | 1);
 }
 
+static void unmap_page(uint64_t vaddr) {
+    PML4T *pml4t = to_hh(read_cr3());
+    pml4t = (void*) (u(pml4t) & 0xfffffffffffff000);
+    pml4t->pdpt[(vaddr >> 39) & 0x1ff] = (void*) (u(pml4t->pdpt[(vaddr >> 39) & 0x1ff]) | 1);
+    PDPT *pml4e = to_hh(pml4t->pdpt[(vaddr >> 39) & 0x1ff]);
+    pml4e = (void*) (u(pml4e) & 0xfffffffffffff000);
+    pml4e->pdt[(vaddr >> 30) & 0x1ff] = (void*) (u(pml4e->pdt[(vaddr >> 30) & 0x1ff]) | 1);
+    PDT *pdpe = to_hh(pml4e->pdt[(vaddr >> 30) & 0x1ff]);
+    pdpe = (void*) (u(pdpe) & 0xfffffffffffff000);
+    pdpe->pt[(vaddr >> 21) & 0x1ff] = (void*) (u(pdpe->pt[(vaddr >> 21) & 0x1ff]) | 1);
+    PT *pde = to_hh(pdpe->pt[(vaddr >> 21) & 0x1ff]);
+    pde = (void*) (u(pde) & 0xfffffffffffff000);
+    pde->pe[(vaddr >> 12) & 0x1ff] = (void*) 0;
+}
+
 static void kmap_real(void *__physical paddr, uint64_t vaddr, size_t pcount) {
     for(size_t i = 0; i < pcount; i++) map_page(paddr+i*0x1000, vaddr+i*0x1000);
 }
@@ -65,4 +80,8 @@ void* kmap(void *__physical paddr, void *vaddr_hint, size_t pcount) {
     while(!can_map_pages(vaddr, pcount)) vaddr += 0x1000;
     kmap_real(paddr, vaddr, pcount);
     return (void*) vaddr;
+}
+
+void* kunmap(void *vaddr, size_t pcount) {
+    for(size_t i = 0; i < pcount; i++) unmap_page(((uint64_t) vaddr)+i*0x1000);
 }
