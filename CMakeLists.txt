@@ -98,7 +98,7 @@ add_subdirectory(filesystems)
 add_subdirectory(ld)
 add_subdirectory(${PHANTOMOS_TARGET_PROCESSOR})
 
-add_executable(phantom src/memcpy.c include/elf.h include/memcpy.h)
+add_executable(phantom src/foo.c include/elf.h include/memcpy.h)
 
 target_compile_options(phantom PRIVATE -fPIE -static-pie)
 

@@ -62,4 +62,15 @@ typedef struct {
     unsigned char reserved[14];
 }Ext2BlockGroupHeader;
 
+typedef struct {
+    uint16_t type_and_permissions;
+    uint16_t in_uid;
+    uint32_t size_low;
+    uint32_t atime;
+    uint32_t ctime;
+    uint32_t mtime;
+    uint32_t dtime;
+    
+} Ext2INodeBlock;
+
 #endif

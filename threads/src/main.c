@@ -33,6 +33,7 @@ result block_condition(_Bool(* __kernel callback)(struct __ThreadHandle*)){
         else{
             deschedule(self);
             atomic_store_explicit(&self->status,Blocked,memory_order_relaxed);
+            yield();
         }
     }while(1);
 
