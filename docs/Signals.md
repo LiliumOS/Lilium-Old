@@ -26,11 +26,13 @@ In particular, with the flag set:
 * Executing a default action of terminate or core dump on a thread abnormally terminate the process. Note that terminating the main thread with a signal will also cause abnormal termination of the process, **even** if the main thread has cleared the flag.
 * Executing a default action of stop on a thread will place both the thread and the process into the STOPPED state.
 * Executing a default action of continue on a thread will place the thread and the process into the RUNNING state if it was previously in the STOPPED state. This will **not** place other threads in a STOPPED state into the RUNNING state (with exceptions detailed in the "Signal Handling Thread" section)
+
 If the flag is cleared, then default actions applies only to the thread (with exceptions detailed in the "Signal Handling Thread" section).
 
 Additionally, each thread has a flag that controls whether the executing a signal handler interrupts the thread, the signal interrupt flag. This flag is also set by default. When set, after receiving a signal, the thread is interrupted:
 * When returning from a user-provided signal handler
 * When executing a default action of continue (even if the thread was not STOPPED).
+* 
 If the flag is clear, then the thread is *never* interrupted upon reciept of a signal. 
 
 ## Signal Handling Thread
@@ -38,7 +40,7 @@ If the flag is clear, then the thread is *never* interrupted upon reciept of a s
 Every process has a signal handling thread. When the process is created, or `exec`s, this is set to the main thread. 
 Whenever a process recieves a signal, the result is equivalent to the signal handling thread of the process recieving the same signal, except:
 * If the signal recieved is SIGKILL or SIGSTOP, then the signal action flag is ignored for the purposes of handling that signal, and both the signal handling thread, and it's controlling process are termianted or stopped. 
-* If the signal recieved is SIGCONT, then both the process, and *every* thread in the process that is in a STOPPED state is put into a RUNNING state.
+* If the signal recieved is SIGCONT, then both the process, and *every* thread in the process that is in a STOPPED state is put into a RUNNING state. Only the Signal Handling Thread is interrupted, however, if its signal interrupt flag is set.
 
 ## Signal Receipt
 
