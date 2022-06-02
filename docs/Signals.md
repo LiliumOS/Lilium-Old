@@ -53,12 +53,15 @@ Whether or not a signal is received by a thread depends on it's state, and on th
 
 ## Signal Delivery and Resumable System Calls
 
-When a signal is sent to a thread, except by from that thread itself, PhantomOS only guarantees that the signal will be recieved in a finite amount of time. Specifically, PhantomOS delivers signals to a thread at the following points in it's execution, when the state of the thread permits the receipt of the signal:
+When a signal is sent to a thread, except by from that thread itself, PhantomOS only guarantees that the signal will be recieved in a finite amount of time. Specifically, PhantomOS guarantees delivery of signals to a thread at the following points in it's execution, when the state of the thread permits the receipt of the signal:
 * Immediately, if the signal is delivered as the result of a fault caused by that thread.
 * Immediately before any system call executed on that thread returns to userspace
 * Immediately before a System call executed on that thread puts the thread into a BLOCKED state.
 * To any thread that is BLOCKED, STOPPED, or SUSPENDED, within some finite period of time. 
-* Immediately before control is returned to the thread from the scheduler. 
+    * In the case of a signal that executes a default action of continue when the thread is in a STOPPED state, it should be delivered within a period of time that is appropriate for the thread's priority.
+* Immediately before control is returned to the thread from the scheduler if the thread is not within a system call except a Resumable System Call. 
+
+Signals that are delivered during the execution of system calls do not affect the results of that system call, except insofar as they might affect state queried by the system call (for example, if the thread is blocked in an I/O operation and recieves a signal, the reciept of the signal may set the INTERRUPTED flag, but otherwise, when returning, the I/O operation continues as normal).
 
 ## Signals
 
@@ -121,12 +124,15 @@ This macro is defined to a value of type `long` that is not negative, and may be
 `result SignalProcess(ProcessHandle* hdl,int sig);`
 
 For `SignalThread`, sends an asynchronous signal to the thread designated by `hdl`, or the calling thread if `hdl` is `NULL`. 
-(If the signal is sent to the current thread, it is recived as a synchronous signal instead, unless executed from the handler of the same signal).
 For `SignalProcess`, sends an asynchronous signal to the signal handling thread of the process designated by `hdl`, or the current process if `hdl` is `NULL`. 
 
-This system call is *memory coherent*. An Atomic access `A` on a thread of execution that calls `SignalThread` that is *sequenced-before* the call *strongly happens-before* that call. 
+If the signal is sent to the current thread, or it is sent to the current process and the current thread is the signal handling thread of the current process, then the signal is guaranteed to be delivered before the system call returns, and, if it executes a user-defined signal handler, then the successfull call to this function *happens-before* the execution of the user-defined signal handler.
 
-Returns INVALID_HANDLE if `hdl` is neither NULL nor a valid thread handle (or process handle). Returns INVALID_ARGUMENT if `sig` is not a signal number defined above, or a real-time signal.
+This system call is *memory coherent*. An Atomic access `A` on a thread of execution that calls `SignalThread` that is *sequenced-before* the call *happens-before* that call. 
+
+Returns INVALID_HANDLE if `hdl` is neither NULL nor a valid thread handle (or process handle). 
+Returns INVALID_ARGUMENT if `sig` is not a signal number defined above, or a real-time signal.
+Returns KILLED if `hdl` was terminated before execution.
 Returns PERMISSION if the current thread does not have `SendSignal` permission to `hdl`. 
 
 ### signal
@@ -150,7 +156,9 @@ If `SIG_FLG_ACTION` is set in `flags`, then the signal action flag is set. If `S
 
 The total operation shall behave as though an atomic read-modify-write with memory_order_relaxed. 
 
-Returns INVALID_ARGUMENT if flags is neither `SIG_FLG_ACTION`, nor `SIG_FLG_INTERRUPT`, nor `SIG_FLG_ACTION|SIG_FLG_INTERRUPT`. Returns PERMISSION if `SIG_FLG_ACTION` is specified, and the calling thread does not have SendSignal permission to the current process. If an error is returned, then no flags were modified by the call.
+Returns INVALID_ARGUMENT if flags is neither `SIG_FLG_ACTION`, nor `SIG_FLG_INTERRUPT`, nor `SIG_FLG_ACTION|SIG_FLG_INTERRUPT`. 
+Returns PERMISSION if `SIG_FLG_ACTION` is specified, and the calling thread does not have SendSignal permission to the current process.  
+If an error is returned, then no flags were modified by the call.  
 
 ### ClearSignalFlags
 
@@ -170,6 +178,9 @@ Returns INVALID_ARGUMENT if flags is neither `SIG_FLG_ACTION`, nor `SIG_FLG_INTE
 
 Sets the signal handling thread of the current process to `hdl`, or the current thread if `hdl` is NULL. 
 
-Returns INVALID_HANDLE if `hdl` is neither NULL nor a valid ThreadHandle. Returns INVALID_ARGUMENT if `hdl` is a handle to a thread that is not owned by the current process. If `hdl` is not NULL, returns PERMISSION if the calling thread does not have `SendSignal` permission to `hdl`. Returns PERMISSION if the calling thread does not have `SignalControl` permission to the current process.
+Returns INVALID_HANDLE if `hdl` is neither NULL nor a valid ThreadHandle.  
+Returns INVALID_ARGUMENT if `hdl` is a handle to a thread that is not owned by the current process.  
+If `hdl` is not NULL, returns PERMISSION if the calling thread does not have `SendSignal` permission to `hdl`. 
+Returns PERMISSION if the calling thread does not have `SignalControl` permission to the current process.  
 
 
